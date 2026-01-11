@@ -6,31 +6,27 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 | Plugin | Description | Skills |
 |--------|-------------|--------|
-| **atelier** | Core SDD workflows for feature specifications and product management | spec, change, product |
-| **atelier-code** | Code quality workflows for reviews, commits, and validation | code, reviewing-code, generating-commits |
-| **atelier-oracle** | Deep thinking and debugging with sequential reasoning | oracle |
-| **atelier-typescript** | TypeScript ecosystem patterns (auto-invoked) | api-design, dynamodb-toolbox, drizzle-orm, fastify-typebox |
+| **spec** | Core SDD workflows for feature specifications and product management | spec, change, product |
+| **code** | Code quality workflows for reviews, commits, and validation | code, reviewing-code, generating-commits |
+| **oracle** | Deep thinking and debugging with sequential reasoning | oracle |
+| **typescript** | TypeScript ecosystem patterns (auto-invoked) | api-design, dynamodb-toolbox, drizzle-orm, fastify-typebox |
 
 ## Installation
 
-### Full Marketplace
-
 ```bash
-claude --plugin-dir /path/to/claude-code-atelier
-```
+# Add the marketplace
+/plugin marketplace add martinffx/claude-code-atelier
 
-### Individual Plugins
-
-```bash
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-code
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-oracle
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-typescript
+# Install plugins
+/plugin install spec@atelier
+/plugin install code@atelier
+/plugin install oracle@atelier
+/plugin install typescript@atelier
 ```
 
 ## Commands
 
-### atelier (Core SDD)
+### spec (Core SDD)
 
 ```bash
 /spec create <feature-name>    # Create new feature specification
@@ -47,14 +43,14 @@ claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-typescript
 /product update                # Update methodology docs
 ```
 
-### atelier-code
+### code
 
 ```bash
 /code review [branch]          # Review code changes as senior engineer
 /code commit [message]         # Create well-crafted conventional commit
 ```
 
-### atelier-oracle
+### oracle
 
 ```bash
 /oracle debug <error>          # Systematic debugging with bisect
@@ -62,7 +58,7 @@ claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-typescript
 /oracle thinkdeep <question>   # Extended reasoning analysis
 ```
 
-### atelier-typescript
+### typescript
 
 Model-invoked (no slash command). Automatically loads relevant patterns when working with:
 - REST API design
@@ -77,7 +73,7 @@ claude-code-atelier/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── plugins/
-│   ├── atelier/
+│   ├── atelier-spec/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── skills/
 │   │   │   ├── spec/

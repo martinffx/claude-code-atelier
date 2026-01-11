@@ -1,5 +1,5 @@
 {
-  "name": "atelier-marketplace",
+  "name": "atelier",
   "owner": {
     "name": "Martin Richards"
   },
@@ -9,19 +9,19 @@
   },
   "plugins": [
     {
-      "name": "atelier",
-      "source": { "source": "relative", "path": "./plugins/atelier" }
+      "name": "spec",
+      "source": { "source": "relative", "path": "./plugins/atelier-spec" }
     },
     {
-      "name": "atelier-code",
+      "name": "code",
       "source": { "source": "relative", "path": "./plugins/atelier-code" }
     },
     {
-      "name": "atelier-oracle",
+      "name": "oracle",
       "source": { "source": "relative", "path": "./plugins/atelier-oracle" }
     },
     {
-      "name": "atelier-typescript",
+      "name": "typescript",
       "source": { "source": "relative", "path": "./plugins/atelier-typescript" }
     }
   ]

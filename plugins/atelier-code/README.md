@@ -1,4 +1,4 @@
-# Atelier Code
+# Code
 
 Code quality workflows for reviewing changes, creating commits, and validating builds.
 
@@ -40,7 +40,8 @@ Code quality workflows for reviewing changes, creating commits, and validating b
 ## Installation
 
 ```bash
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-code
+/plugin marketplace add martinffx/claude-code-atelier
+/plugin install code@atelier
 ```
 
 ## License

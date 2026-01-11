@@ -1,4 +1,4 @@
-# Atelier
+# Spec
 
 Spec-Driven Development workflows for feature specifications, change management, and product documentation.
 
@@ -45,7 +45,8 @@ Spec-Driven Development workflows for feature specifications, change management,
 ## Installation
 
 ```bash
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier
+/plugin marketplace add martinffx/claude-code-atelier
+/plugin install spec@atelier
 ```
 
 ## License

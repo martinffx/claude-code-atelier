@@ -1,4 +1,4 @@
-# Atelier Oracle
+# Oracle
 
 Deep thinking and debugging workflows using sequential reasoning for complex problem-solving.
 
@@ -37,7 +37,8 @@ Deep thinking and debugging workflows using sequential reasoning for complex pro
 ## Installation
 
 ```bash
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-oracle
+/plugin marketplace add martinffx/claude-code-atelier
+/plugin install oracle@atelier
 ```
 
 ## License

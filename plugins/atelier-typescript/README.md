@@ -1,4 +1,4 @@
-# Atelier TypeScript
+# TypeScript
 
 TypeScript ecosystem patterns for Fastify, DynamoDB, Drizzle ORM, and REST API design.
 
@@ -54,7 +54,8 @@ No slash commands - patterns are automatically loaded when working with:
 ## Installation
 
 ```bash
-claude --plugin-dir /path/to/claude-code-atelier/plugins/atelier-typescript
+/plugin marketplace add martinffx/claude-code-atelier
+/plugin install typescript@atelier
 ```
 
 ## License

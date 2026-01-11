@@ -1,5 +1,5 @@
 {
-  "name": "atelier-code",
+  "name": "code",
   "version": "1.0.0",
   "description": "Code quality workflows for reviewing changes, creating commits, and validating builds",
   "author": {
