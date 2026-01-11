@@ -1,0 +1,10 @@
+{
+  "name": "atelier",
+  "version": "1.0.0",
+  "description": "Spec-Driven Development workflows for feature specifications, change management, and product documentation",
+  "author": {
+    "name": "Martin Richards"
+  },
+  "license": "MIT",
+  "skills": "./skills"
+}

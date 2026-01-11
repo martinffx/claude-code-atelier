@@ -1,0 +1,28 @@
+{
+  "name": "atelier-marketplace",
+  "owner": {
+    "name": "Martin Richards"
+  },
+  "metadata": {
+    "description": "Personal development toolkit - spec-driven development, code quality, deep thinking, and TypeScript patterns",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "atelier",
+      "source": { "source": "relative", "path": "./plugins/atelier" }
+    },
+    {
+      "name": "atelier-code",
+      "source": { "source": "relative", "path": "./plugins/atelier-code" }
+    },
+    {
+      "name": "atelier-oracle",
+      "source": { "source": "relative", "path": "./plugins/atelier-oracle" }
+    },
+    {
+      "name": "atelier-typescript",
+      "source": { "source": "relative", "path": "./plugins/atelier-typescript" }
+    }
+  ]
+}

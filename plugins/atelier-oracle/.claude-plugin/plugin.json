@@ -1,0 +1,10 @@
+{
+  "name": "atelier-oracle",
+  "version": "1.0.0",
+  "description": "Deep thinking and debugging workflows using sequential reasoning for complex problem-solving",
+  "author": {
+    "name": "Martin Richards"
+  },
+  "license": "MIT",
+  "skills": "./skills"
+}

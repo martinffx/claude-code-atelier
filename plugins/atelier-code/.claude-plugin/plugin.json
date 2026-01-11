@@ -1,0 +1,10 @@
+{
+  "name": "atelier-code",
+  "version": "1.0.0",
+  "description": "Code quality workflows for reviewing changes, creating commits, and validating builds",
+  "author": {
+    "name": "Martin Richards"
+  },
+  "license": "MIT",
+  "skills": "./skills"
+}
