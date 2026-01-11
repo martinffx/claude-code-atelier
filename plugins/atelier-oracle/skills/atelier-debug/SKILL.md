@@ -1,3 +1,9 @@
+---
+name: atelier-debug
+description: Systematic debugging with bisect methodology. Use for debugging runtime errors, finding regressions with git bisect, isolating buggy code, or investigating performance issues.
+user-invocable: true
+---
+
 # Debug: Systematic Investigation & Bisect Debugging
 
 ## Step 1: Parse Debug Request & Classify Problem
@@ -126,27 +132,17 @@ Continue until sufficient evidence gathered.
 
 **Runtime Error Debugging:**
 ```
-/oracle debug "TypeError: 'NoneType' object has no attribute 'split' in parser.py"
+/atelier-debug "TypeError: 'NoneType' object has no attribute 'split' in parser.py"
 ```
 
 **Git Bisect for Regression:**
 ```
-/oracle debug "Use git bisect to find when the authentication started failing"
+/atelier-debug "Use git bisect to find when the authentication started failing"
 ```
 
 **Performance Issue Investigation:**
 ```
-/oracle debug "App is consuming excessive memory during bulk operations"
-```
-
-**Integration Problem Analysis:**
-```
-/oracle debug "API returns 500 errors randomly with this stack trace: [traceback]"
-```
-
-**Code Bisect for Complex Issues:**
-```
-/oracle debug "Use code bisect to find which section contains the memory leak"
+/atelier-debug "App is consuming excessive memory during bulk operations"
 ```
 
 ## Debugging Categories
@@ -161,29 +157,3 @@ Continue until sufficient evidence gathered.
 **Git Bisect:** `git bisect start → git bisect bad HEAD → git bisect good v1.0.0`
 **Code Bisect:** Comment out half code → test → narrow down recursively
 **Data Bisect:** Test with half dataset → identify problematic subset → repeat
-**Time Bisect:** Check system states → identify when issue started → isolate change
-
-## When to Use Each Strategy
-
-**Use Bisect Debugging:** Clear boundaries, linear problems, testable midpoints, binary outcomes
-**Use Systematic Investigation:** Complex issues, no clear boundaries, integration problems, multiple causes
-
-## Integration with Spec-Driven Development
-
-**During Implementation:**
-- Debug issues that arise during `/spec work`
-- Validate fixes with `/code validate`
-- Ensure solutions follow architectural patterns
-
-**Workflow Integration:**
-```bash
-/spec work feature-name    # Implementation
-/oracle debug "issue"      # Debug problems
-/code validate             # Quality gates
-/code commit               # Commit fixes
-```
-
-## Expected Outcomes
-
-**Results:** Root cause identified, solution implemented, validation completed, prevention established
-**Benefits:** O(log n) bisect efficiency, comprehensive analysis, methodical approach, workflow integration

@@ -1,3 +1,9 @@
+---
+name: atelier-challenge
+description: Challenge an approach with critical thinking. Use when questioning assumptions, validating decisions, testing approach validity, or preventing automatic agreement.
+user-invocable: true
+---
+
 # Challenge: Critical Thinking Prompt
 
 ## Step 1: Parse Challenge Request
@@ -75,27 +81,23 @@ Continue until you reach a clear conclusion.
 
 **Challenge Technical Decisions:**
 ```
-/oracle challenge "Do we really need a microservices architecture for this simple app?"
+/atelier-challenge "Do we really need a microservices architecture for this simple app?"
 ```
-→ Use sequential thinking to question complexity assumptions
 
 **Challenge Implementation Approach:**
 ```
-/oracle challenge "I think this caching strategy will actually slow things down"
+/atelier-challenge "I think this caching strategy will actually slow things down"
 ```
-→ Use sequential thinking to evaluate performance assumptions
 
 **Challenge Requirements:**
 ```
-/oracle challenge "Are we solving the right problem with this feature?"
+/atelier-challenge "Are we solving the right problem with this feature?"
 ```
-→ Use sequential thinking to validate problem-solution fit
 
 **Challenge Architectural Patterns:**
 ```
-/oracle challenge "Should we really use event sourcing for this use case?"
+/atelier-challenge "Should we really use event sourcing for this use case?"
 ```
-→ Use sequential thinking to assess pattern appropriateness
 
 ## When to Use Challenge
 
@@ -118,16 +120,7 @@ Continue until you reach a clear conclusion.
 
 ## Challenge vs ThinkDeep
 
-**Use /oracle challenge**: Question assumptions, test validity, assess risks, prevent automatic agreement
-**Use /oracle thinkdeep**: Deep exploration, comprehensive analysis, alternative discovery, complex decisions
+**Use /atelier-challenge**: Question assumptions, test validity, assess risks, prevent automatic agreement
+**Use /atelier-thinkdeep**: Deep exploration, comprehensive analysis, alternative discovery, complex decisions
 
 **Key distinction**: Challenge = critical evaluation, ThinkDeep = deep exploration
-
-## Expected Outcomes
-
-After using this command:
-- Clear identification of flawed assumptions
-- Honest assessment of approach validity
-- Recognition of risks and trade-offs
-- Alternative solutions if current approach is problematic
-- Confidence in decisions or clear direction for changes

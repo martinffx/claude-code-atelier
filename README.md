@@ -6,9 +6,9 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 | Plugin | Description | Skills |
 |--------|-------------|--------|
-| **spec** | Core SDD workflows for feature specifications and product management | spec, change, product |
-| **code** | Code quality workflows for reviews, commits, and validation | code, reviewing-code, generating-commits |
-| **oracle** | Deep thinking and debugging with sequential reasoning | oracle |
+| **spec** | Core SDD workflows for feature specifications and product management | atelier-spec, atelier-change, atelier-product |
+| **code** | Code quality workflows for reviews and commits | atelier-review, atelier-commit |
+| **oracle** | Deep thinking and debugging with sequential reasoning | atelier-debug, atelier-challenge, atelier-thinkdeep |
 | **typescript** | TypeScript ecosystem patterns (auto-invoked) | api-design, dynamodb-toolbox, drizzle-orm, fastify-typebox |
 
 ## Installation
@@ -24,38 +24,38 @@ A software development atelier for Claude Code - spec-driven development, code q
 /plugin install typescript@atelier
 ```
 
-## Commands
+## Skills
 
 ### spec (Core SDD)
 
 ```bash
-/spec create <feature-name>    # Create new feature specification
-/spec work <feature-name>      # Implement next ready task
-/spec status                   # Track feature progress
-/spec sync <feature-name>      # Update spec from code changes
+/atelier-spec create <feature>    # Create new feature specification
+/atelier-spec work <feature>      # Implement next ready task
+/atelier-spec status              # Track feature progress
+/atelier-spec sync <feature>      # Update spec from code changes
 
-/change propose <feature-name> # Propose changes to existing feature
-/change complete <feature-name> # Merge delta and close epic
+/atelier-change propose <feature> # Propose changes to existing feature
+/atelier-change complete <feature> # Merge delta and close epic
 
-/product init                  # Initialize project documentation
-/product progress              # Track product status
-/product roadmap               # Update roadmap priorities
-/product update                # Update methodology docs
+/atelier-product init             # Initialize project documentation
+/atelier-product progress         # Track product status
+/atelier-product roadmap          # Update roadmap priorities
+/atelier-product update           # Update methodology docs
 ```
 
 ### code
 
 ```bash
-/code review [branch]          # Review code changes as senior engineer
-/code commit [message]         # Create well-crafted conventional commit
+/atelier-review                # Review code changes as senior engineer
+/atelier-commit [message]      # Create well-crafted conventional commit
 ```
 
 ### oracle
 
 ```bash
-/oracle debug <error>          # Systematic debugging with bisect
-/oracle challenge <topic>      # Challenge approach with critical thinking
-/oracle thinkdeep <question>   # Extended reasoning analysis
+/atelier-debug <error>         # Systematic debugging with bisect
+/atelier-challenge <topic>     # Challenge approach with critical thinking
+/atelier-thinkdeep <question>  # Extended reasoning analysis
 ```
 
 ### typescript
@@ -89,16 +89,16 @@ claude-code-atelier/
 │   ├── atelier-code/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/
-│   │       ├── code/
-│   │       │   ├── SKILL.md
-│   │       │   └── workflows/
+│   │       ├── atelier-review/SKILL.md
+│   │       ├── atelier-commit/SKILL.md
 │   │       ├── reviewing-code/SKILL.md
 │   │       └── generating-commits/SKILL.md
 │   ├── atelier-oracle/
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/oracle/
-│   │       ├── SKILL.md
-│   │       └── workflows/
+│   │   └── skills/
+│   │       ├── atelier-debug/SKILL.md
+│   │       ├── atelier-challenge/SKILL.md
+│   │       └── atelier-thinkdeep/SKILL.md
 │   └── atelier-typescript/
 │       ├── .claude-plugin/plugin.json
 │       └── skills/

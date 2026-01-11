@@ -1,5 +1,5 @@
 ---
-name: change
+name: atelier-change
 description: Brownfield change management for existing features. Use when proposing changes to existing specifications, modifying implemented features, or completing change cycles.
 user-invocable: true
 ---

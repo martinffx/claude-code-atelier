@@ -1,3 +1,9 @@
+---
+name: atelier-thinkdeep
+description: Extended reasoning analysis using sequential thinking. Use for deep exploration, comprehensive analysis, complex decisions, or when you need fresh perspectives on difficult problems.
+user-invocable: true
+---
+
 # ThinkDeep: Extended Reasoning Analysis
 
 ## Step 1: Parse Request Parameters
@@ -109,45 +115,28 @@ Continue sequential thinking until satisfaction, using:
 - **Implementation Guidance**: [key considerations and next steps]
 - **Risk Mitigation**: [how to address identified concerns]
 
-## Step 4: Integration Recommendations
-
-**Workflow Integration:**
-- When to use this vs other commands
-- How this fits with spec-driven development
-- Follow-up commands or next steps
-
-**Context Preservation:**
-- Key insights to remember for future sessions
-- Decision rationale for documentation
-- Dependencies and prerequisites identified
-
 ---
 
 ## Usage Examples
 
 **Basic deep analysis:**
 ```
-/oracle thinkdeep "Analyze my authentication architecture"
+/atelier-thinkdeep "Analyze my authentication architecture"
 ```
 
 **With file references:**
 ```
-/oracle thinkdeep "Evaluate my database schema with reference to models/user.py"
+/atelier-thinkdeep "Evaluate my database schema with reference to models/user.py"
 ```
 
 **With focus areas:**
 ```
-/oracle thinkdeep "Assess my microservices design focusing on performance and security"
+/atelier-thinkdeep "Assess my microservices design focusing on performance and security"
 ```
 
 **Complex architectural decisions:**
 ```
-/oracle thinkdeep "Should I use GraphQL or REST for my API considering team skills and scalability needs"
-```
-
-**Technology choices:**
-```
-/oracle thinkdeep "Compare PostgreSQL vs MongoDB for this e-commerce platform"
+/atelier-thinkdeep "Should I use GraphQL or REST for my API considering team skills and scalability needs"
 ```
 
 ## When to Use ThinkDeep
@@ -158,20 +147,10 @@ Continue sequential thinking until satisfaction, using:
 - **Alternative exploration**: When stuck and need fresh perspectives
 - **Risk assessment**: Before major implementation decisions
 
-## Integration with Spec-Driven Development
-
-**Workflow:**
-- Before `/spec create` → Validate approach and technology choices
-- During design → Challenge architectural decisions
-- After `/spec work` → Review implementations
-- Before commits → Ensure sound technical choices
-
-**Purpose:** Validate approaches, challenge decisions, review implementations, ensure sound choices
-
 ## ThinkDeep vs Challenge
 
-**Use /oracle thinkdeep**: Deep exploration, comprehensive analysis, alternative discovery, complex decisions
-**Use /oracle challenge**: Question assumptions, test validity, assess risks, prevent automatic agreement
+**Use /atelier-thinkdeep**: Deep exploration, comprehensive analysis, alternative discovery, complex decisions
+**Use /atelier-challenge**: Question assumptions, test validity, assess risks, prevent automatic agreement
 
 **Key distinction**: ThinkDeep = deep exploration, Challenge = critical evaluation
 

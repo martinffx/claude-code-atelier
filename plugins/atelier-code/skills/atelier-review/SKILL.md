@@ -1,3 +1,9 @@
+---
+name: atelier-review
+description: Review code changes as a senior engineer. Use when doing code reviews, checking PR quality, or auditing changes before commit.
+user-invocable: true
+---
+
 # Code Review
 
 ## Step 1: Gather Context

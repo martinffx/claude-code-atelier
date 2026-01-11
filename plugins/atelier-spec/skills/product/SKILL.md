@@ -1,5 +1,5 @@
 ---
-name: product
+name: atelier-product
 description: Product documentation and roadmap management. Use for initializing new projects, tracking product progress, updating roadmap priorities, or refreshing standards documentation.
 user-invocable: true
 ---

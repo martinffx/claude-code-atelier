@@ -6,16 +6,16 @@ Code quality workflows for reviewing changes, creating commits, and validating b
 
 | Skill | Type | Description |
 |-------|------|-------------|
-| code | User-invocable | Code quality workflows for reviews and commits |
+| atelier-review | User-invocable | Review code changes as senior engineer |
+| atelier-commit | User-invocable | Create well-crafted conventional commits |
 | reviewing-code | Reference | Code review patterns (auto-loaded) |
 | generating-commits | Reference | Commit message conventions (auto-loaded) |
 
-## Workflows
+## Usage
 
 ```bash
-/code review [branch]     # Review code changes as senior engineer
-/code commit [message]    # Create well-crafted conventional commit
-/code validate            # Run build, lint, and test pipeline
+/atelier-review            # Review code changes as senior engineer
+/atelier-commit [message]  # Create well-crafted conventional commit
 ```
 
 ## Quick Reference

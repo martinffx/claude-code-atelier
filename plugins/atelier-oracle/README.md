@@ -6,26 +6,28 @@ Deep thinking and debugging workflows using sequential reasoning for complex pro
 
 | Skill | Type | Description |
 |-------|------|-------------|
-| oracle | User-invocable | Deep thinking and debugging with sequential reasoning |
+| atelier-debug | User-invocable | Systematic debugging with bisect methodology |
+| atelier-challenge | User-invocable | Challenge approaches with critical thinking |
+| atelier-thinkdeep | User-invocable | Extended reasoning analysis |
 
-## Workflows
+## Usage
 
 ```bash
-/zen debug <error>         # Systematic debugging with bisect methodology
-/zen challenge <topic>     # Challenge an approach with critical thinking
-/zen thinkdeep <question>  # Extended reasoning analysis
+/atelier-debug <error>         # Systematic debugging with bisect methodology
+/atelier-challenge <topic>     # Challenge an approach with critical thinking
+/atelier-thinkdeep <question>  # Extended reasoning analysis
 ```
 
 ## When to Use
 
-| Scenario | Workflow |
-|----------|----------|
-| "Why is this failing?" | /zen debug |
-| "Is this the right approach?" | /zen challenge |
-| "Help me think through this" | /zen thinkdeep |
-| "Find when this broke" | /zen debug (bisect) |
-| "Are we over-engineering?" | /zen challenge |
-| "Compare these options" | /zen thinkdeep |
+| Scenario | Skill |
+|----------|-------|
+| "Why is this failing?" | /atelier-debug |
+| "Is this the right approach?" | /atelier-challenge |
+| "Help me think through this" | /atelier-thinkdeep |
+| "Find when this broke" | /atelier-debug (bisect) |
+| "Are we over-engineering?" | /atelier-challenge |
+| "Compare these options" | /atelier-thinkdeep |
 
 ## Debug Strategies
 

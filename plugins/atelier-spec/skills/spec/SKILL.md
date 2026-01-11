@@ -1,5 +1,5 @@
 ---
-name: spec
+name: atelier-spec
 description: Feature specification lifecycle management. Use for creating new feature specs (greenfield or brownfield detection), implementing tasks with layer boundary testing, tracking progress via Beads, or syncing specs from existing code.
 user-invocable: true
 ---

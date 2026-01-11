@@ -1,3 +1,10 @@
+---
+name: atelier-commit
+description: Create well-crafted conventional commits. Use when staging changes, creating git commits, or committing code.
+user-invocable: true
+allowed-tools: Bash(git:*)
+---
+
 # Smart Git Commit
 
 <analyze_changes>
