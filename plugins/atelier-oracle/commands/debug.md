@@ -1,9 +1,3 @@
----
-name: atelier-debug
-description: Systematic debugging with bisect methodology. Use for debugging runtime errors, finding regressions with git bisect, isolating buggy code, or investigating performance issues.
-user-invocable: true
----
-
 # Debug: Systematic Investigation & Bisect Debugging
 
 ## Step 1: Parse Debug Request & Classify Problem
@@ -132,17 +126,17 @@ Continue until sufficient evidence gathered.
 
 **Runtime Error Debugging:**
 ```
-/atelier-debug "TypeError: 'NoneType' object has no attribute 'split' in parser.py"
+/oracle:debug "TypeError: 'NoneType' object has no attribute 'split' in parser.py"
 ```
 
 **Git Bisect for Regression:**
 ```
-/atelier-debug "Use git bisect to find when the authentication started failing"
+/oracle:debug "Use git bisect to find when the authentication started failing"
 ```
 
 **Performance Issue Investigation:**
 ```
-/atelier-debug "App is consuming excessive memory during bulk operations"
+/oracle:debug "App is consuming excessive memory during bulk operations"
 ```
 
 ## Debugging Categories

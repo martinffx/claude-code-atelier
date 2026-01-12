@@ -1,7 +1,7 @@
 ---
 name: atelier-thinkdeep
 description: Extended reasoning analysis using sequential thinking. Use for deep exploration, comprehensive analysis, complex decisions, or when you need fresh perspectives on difficult problems.
-user-invocable: true
+user-invocable: false
 ---
 
 # ThinkDeep: Extended Reasoning Analysis

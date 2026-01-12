@@ -2,32 +2,31 @@
 
 Deep thinking and debugging workflows using sequential reasoning for complex problem-solving.
 
-## Skills
+## Commands
 
-| Skill | Type | Description |
-|-------|------|-------------|
-| atelier-debug | User-invocable | Systematic debugging with bisect methodology |
-| atelier-challenge | User-invocable | Challenge approaches with critical thinking |
-| atelier-thinkdeep | User-invocable | Extended reasoning analysis |
+| Command | Description |
+|---------|-------------|
+| /oracle:debug | Systematic debugging with bisect methodology |
+
+## Skills (auto-invoked)
+
+| Skill | Description |
+|-------|-------------|
+| atelier-challenge | Challenge approaches with critical thinking |
+| atelier-thinkdeep | Extended reasoning analysis |
 
 ## Usage
 
 ```bash
-/atelier-debug <error>         # Systematic debugging with bisect methodology
-/atelier-challenge <topic>     # Challenge an approach with critical thinking
-/atelier-thinkdeep <question>  # Extended reasoning analysis
+/oracle:debug <error>  # Systematic debugging with bisect methodology
 ```
 
 ## When to Use
 
-| Scenario | Skill |
-|----------|-------|
-| "Why is this failing?" | /atelier-debug |
-| "Is this the right approach?" | /atelier-challenge |
-| "Help me think through this" | /atelier-thinkdeep |
-| "Find when this broke" | /atelier-debug (bisect) |
-| "Are we over-engineering?" | /atelier-challenge |
-| "Compare these options" | /atelier-thinkdeep |
+| Scenario | Command |
+|----------|---------|
+| "Why is this failing?" | /oracle:debug |
+| "Find when this broke" | /oracle:debug (bisect) |
 
 ## Debug Strategies
 

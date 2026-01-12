@@ -7,8 +7,8 @@ A software development atelier for Claude Code - spec-driven development, code q
 | Plugin | Description | Type |
 |--------|-------------|------|
 | **spec** | Feature specification workflows (6 commands + 2 skills) | Commands + Skills |
-| **code** | Code quality workflows | Skills |
-| **oracle** | Deep thinking and debugging | Skills |
+| **code** | Code quality workflows (2 commands) | Commands |
+| **oracle** | Deep thinking and debugging (1 command + 2 skills) | Commands + Skills |
 | **typescript** | TypeScript ecosystem patterns (auto-invoked) | Skills |
 
 ## Installation
@@ -69,10 +69,12 @@ Restart Claude Code after making changes to reload plugins.
 ### oracle
 
 ```bash
-/atelier-debug <error>         # Systematic debugging with bisect
-/atelier-challenge <topic>     # Challenge approach with critical thinking
-/atelier-thinkdeep <question>  # Extended reasoning analysis
+/oracle:debug <error>  # Systematic debugging with bisect
 ```
+
+**Skills (auto-invoked):**
+- `atelier-challenge` - Challenge approaches with critical thinking
+- `atelier-thinkdeep` - Extended reasoning analysis
 
 ### typescript
 
