@@ -1,14 +1,14 @@
 ---
 name: drizzle-orm
-description: Type-safe SQL with Drizzle ORM in TypeScript. Use when defining database schemas, writing queries, setting up relations, running migrations, or working with PostgreSQL/MySQL/SQLite data layers.
+description: Type-safe SQL with Drizzle ORM in TypeScript. Use when defining database schemas, writing queries, setting up relations, running migrations, or working with PostgreSQL/MySQL/SQLite/Cloudflare D1/Durable Objects data layers.
 user-invocable: false
 ---
 
 # Drizzle ORM
 
-Lightweight, type-safe ORM with SQL-like and relational query APIs.
+Lightweight, type-safe ORM with SQL-like and relational query APIs for PostgreSQL, MySQL, SQLite, Cloudflare D1, and Durable Objects.
 
-## Schema Definition (PostgreSQL)
+## Quick Start (PostgreSQL)
 
 ```typescript
 import {
@@ -46,6 +46,34 @@ export const posts = pgTable('posts', {
 })
 ```
 
+See [references/postgresql.md](./references/postgresql.md) for detailed PostgreSQL patterns.
+
+## Quick Start (SQLite/D1)
+
+```typescript
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+
+export const users = sqliteTable('users', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  createdAt: text('created_at').notNull(),
+})
+
+export const posts = sqliteTable('posts', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  content: text('content'),
+  authorId: text('author_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: text('created_at').notNull(),
+})
+```
+
+See [references/sqlite.md](./references/sqlite.md) for SQLite patterns and [references/cloudflare.md](./references/cloudflare.md) for D1 and Durable Objects.
+
 ## Type Inference
 
 ```typescript
@@ -72,17 +100,6 @@ export const postsRelations = relations(posts, ({ one }) => ({
     references: [users.id],
   }),
 }))
-```
-
-## Database Connection
-
-```typescript
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
-import * as schema from './schema'
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL })
-export const db = drizzle(pool, { schema })
 ```
 
 ## SQL-like Queries
@@ -246,73 +263,6 @@ await db.transaction(async (tx) => {
 })
 ```
 
-## Migrations (drizzle-kit)
-
-```typescript
-// drizzle.config.ts
-import { defineConfig } from 'drizzle-kit'
-
-export default defineConfig({
-  schema: './src/db/schema.ts',
-  out: './drizzle',
-  dialect: 'postgresql',
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
-})
-```
-
-```bash
-# Generate migration
-npx drizzle-kit generate
-
-# Apply migrations
-npx drizzle-kit migrate
-
-# Open Drizzle Studio
-npx drizzle-kit studio
-
-# Pull schema from existing DB
-npx drizzle-kit pull
-```
-
-## Column Helpers
-
-```typescript
-// UUID with auto-generation
-id: uuid('id').defaultRandom().primaryKey()
-
-// Timestamps
-createdAt: timestamp('created_at').defaultNow().notNull()
-updatedAt: timestamp('updated_at').$onUpdate(() => new Date())
-
-// Enum
-import { pgEnum } from 'drizzle-orm/pg-core'
-export const statusEnum = pgEnum('status', ['pending', 'active', 'archived'])
-// usage: status: statusEnum('status').default('pending')
-
-// JSON
-metadata: jsonb('metadata').$type<{ key: string }>()
-```
-
-## Composite Keys & Indexes
-
-```typescript
-export const postTags = pgTable('post_tags', {
-  postId: integer('post_id').references(() => posts.id),
-  tagId: integer('tag_id').references(() => tags.id),
-}, (t) => [
-  primaryKey({ columns: [t.postId, t.tagId] }),
-])
-
-export const users = pgTable('users', {
-  // columns...
-}, (t) => [
-  unique('unique_email').on(t.email),
-  index('name_idx').on(t.name),
-])
-```
-
 ## Entity Pattern
 
 Domain entities encapsulate data transformations between API, domain, and database layers.
@@ -424,77 +374,13 @@ class UserRepo {
 
 See [references/repository-pattern.md](./references/repository-pattern.md) for detailed examples.
 
-## Optimistic Locking
+## Database-Specific Guides
 
-Prevent concurrent modification issues with version-based locking.
+For database-specific patterns, connection setup, migrations, and testing:
 
-```typescript
-// Add lockVersion column to schema
-export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
-  lockVersion: integer('lock_version').default(0).notNull(),
-  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
-})
-
-// Update with version check
-async update(entity: UserEntity): Promise<UserEntity> {
-  const result = await this.db
-    .update(users)
-    .set({
-      ...entity.toRecord(),
-      lockVersion: sql`${users.lockVersion} + 1`,
-    })
-    .where(and(
-      eq(users.id, entity.id),
-      eq(users.lockVersion, entity.lockVersion)
-    ))
-    .returning()
-
-  if (result.length === 0) {
-    throw new ConflictError({
-      message: 'Resource was modified by another transaction',
-      retryable: true,
-    })
-  }
-  return UserEntity.fromRecord(result[0])
-}
-```
-
-## DB Error Handling
-
-Map database error codes to domain errors.
-
-```typescript
-type ErrorContext = {
-  userId?: string
-  resourceId?: string
-  [key: string]: unknown
-}
-
-function handleDBError(error: unknown, context: ErrorContext = {}): never {
-  const code = (error as { code?: string }).code
-
-  switch (code) {
-    case '23505': // unique_violation
-      throw new ConflictError('Resource already exists', context)
-    case '23503': // foreign_key_violation
-      throw new NotFoundError('Referenced resource not found', context)
-    case '40001': // serialization_failure
-      throw new ServiceUnavailableError('Transaction conflict - please retry', {
-        retryable: true,
-        ...context,
-      })
-    case 'OC000': // AWS DSQL occ_conflict
-      throw new ServiceUnavailableError('Optimistic concurrency conflict', {
-        retryable: true,
-        ...context,
-      })
-    default:
-      throw error
-  }
-}
-```
+- **[PostgreSQL patterns](./references/postgresql.md)** - Connection, migrations, column types, error codes, optimistic locking
+- **[SQLite patterns](./references/sqlite.md)** - Schema definition, type differences, better-sqlite3 testing
+- **[Cloudflare D1 & Durable Objects](./references/cloudflare.md)** - D1 connection, DO SQLite, testing with vitest-pool-workers, D1 vs DO decision guide
 
 ## Guidelines
 
