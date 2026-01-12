@@ -313,6 +313,189 @@ export const users = pgTable('users', {
 ])
 ```
 
+## Entity Pattern
+
+Domain entities encapsulate data transformations between API, domain, and database layers.
+
+```typescript
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm'
+import type { users } from './schema'
+
+type UserRecord = InferSelectModel<typeof users>
+type UserInsert = InferInsertModel<typeof users>
+
+class UserEntity {
+  public readonly id: string
+  public readonly name: string
+  public readonly email: string
+  public readonly createdAt: Date
+
+  private constructor(data: UserEntityData) {
+    Object.assign(this, data)
+  }
+
+  // API request → Entity
+  static fromRequest(rq: CreateUserRequest, id?: string): UserEntity {
+    return new UserEntity({
+      id: id ?? crypto.randomUUID(),
+      name: rq.name,
+      email: rq.email,
+      createdAt: new Date(),
+    })
+  }
+
+  // DB record → Entity
+  static fromRecord(record: UserRecord): UserEntity {
+    return new UserEntity({
+      id: record.id,
+      name: record.name,
+      email: record.email,
+      createdAt: record.createdAt,
+    })
+  }
+
+  // Entity → DB insert
+  toRecord(): UserInsert {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      createdAt: this.createdAt,
+    }
+  }
+
+  // Entity → API response
+  toResponse(): UserResponse {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      createdAt: this.createdAt.toISOString(),
+    }
+  }
+}
+```
+
+See [references/entity-pattern.md](./references/entity-pattern.md) for detailed examples.
+
+## Repository Pattern
+
+Repositories wrap database access with error handling and business logic.
+
+```typescript
+import { eq, and } from 'drizzle-orm'
+import { users } from './schema'
+import { UserEntity } from './entities/UserEntity'
+
+class UserRepo {
+  constructor(private db: DrizzleDB) {}
+
+  async getById(id: string): Promise<UserEntity> {
+    const record = await this.db.query.users.findFirst({
+      where: eq(users.id, id),
+    })
+    if (!record) throw new NotFoundError('User not found')
+    return UserEntity.fromRecord(record)
+  }
+
+  async create(entity: UserEntity): Promise<UserEntity> {
+    try {
+      const [record] = await this.db
+        .insert(users)
+        .values(entity.toRecord())
+        .returning()
+      return UserEntity.fromRecord(record)
+    } catch (error) {
+      throw handleDBError(error, { userId: entity.id })
+    }
+  }
+
+  async update(entity: UserEntity): Promise<UserEntity> {
+    const [record] = await this.db
+      .update(users)
+      .set(entity.toRecord())
+      .where(eq(users.id, entity.id))
+      .returning()
+    if (!record) throw new NotFoundError('User not found')
+    return UserEntity.fromRecord(record)
+  }
+}
+```
+
+See [references/repository-pattern.md](./references/repository-pattern.md) for detailed examples.
+
+## Optimistic Locking
+
+Prevent concurrent modification issues with version-based locking.
+
+```typescript
+// Add lockVersion column to schema
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  lockVersion: integer('lock_version').default(0).notNull(),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
+})
+
+// Update with version check
+async update(entity: UserEntity): Promise<UserEntity> {
+  const result = await this.db
+    .update(users)
+    .set({
+      ...entity.toRecord(),
+      lockVersion: sql`${users.lockVersion} + 1`,
+    })
+    .where(and(
+      eq(users.id, entity.id),
+      eq(users.lockVersion, entity.lockVersion)
+    ))
+    .returning()
+
+  if (result.length === 0) {
+    throw new ConflictError({
+      message: 'Resource was modified by another transaction',
+      retryable: true,
+    })
+  }
+  return UserEntity.fromRecord(result[0])
+}
+```
+
+## DB Error Handling
+
+Map database error codes to domain errors.
+
+```typescript
+type ErrorContext = {
+  userId?: string
+  resourceId?: string
+  [key: string]: unknown
+}
+
+function handleDBError(error: unknown, context: ErrorContext = {}): never {
+  const code = (error as { code?: string }).code
+
+  switch (code) {
+    case '23505': // unique_violation
+      throw new ConflictError('Resource already exists', context)
+    case '23503': // foreign_key_violation
+      throw new NotFoundError('Referenced resource not found', context)
+    case '40001': // serialization_failure
+      throw new ServiceUnavailableError('Transaction conflict - please retry', {
+        retryable: true,
+        ...context,
+      })
+    case 'OC000': // AWS DSQL occ_conflict
+      throw new ServiceUnavailableError('Optimistic concurrency conflict', {
+        retryable: true,
+        ...context,
+      })
+    default:
+      throw error
+  }
+}
+```
+
 ## Guidelines
 
 1. Define schema in dedicated `schema.ts` file(s)
@@ -323,3 +506,7 @@ export const users = pgTable('users', {
 6. Use relational API (`db.query`) for nested data fetching
 7. Foreign keys need explicit `references(() => table.column)`
 8. Use `returning()` to get inserted/updated/deleted rows
+9. Wrap database access in Repository classes for error handling
+10. Use Entity classes for all data transformations (fromRequest, fromRecord, toRecord, toResponse)
+11. Add `lockVersion` column for optimistic locking on mutable resources
+12. Handle DB errors with specific error types (23505=conflict, 23503=not found, 40001/OC000=retry)
