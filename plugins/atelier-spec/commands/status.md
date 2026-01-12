@@ -76,7 +76,7 @@ Next Ready Tasks:
 
 Estimated Remaining: ~<hours> hours (based on velocity)
 
-Recommendation: /spec work <feature>
+Recommendation: /spec:work <feature>
 ```
 
 ### All Features Report
@@ -98,8 +98,8 @@ Blockers:
   - <task-id> (<feature>): Blocked by <blocking-task-id>
 
 Next Actions:
-  1. /spec work <feature2>  # Continue active feature
-  2. /spec create <feature3>  # Start new feature
+  1. /spec:work <feature2>  # Continue active feature
+  2. /spec:create <feature3>  # Start new feature
 ```
 
 ## Step 5: Identify Blockers and Recommendations
@@ -114,10 +114,9 @@ bd dep list <task-id>
 Show dependency chain and suggest actions.
 
 ### Next Action Logic
-- Feature in progress + ready tasks → `/spec work <feature>`
-- Feature complete → `/spec create <next_feature>` or `/change propose <feature> <change>`
+- Feature in progress + ready tasks → `/spec:work <feature>`
+- Feature complete → `/spec:create <next_feature>` or `/spec:propose <feature> <change>`
 - Tasks blocked → Work on parallel feature or resolve dependencies
-- All complete → `/product roadmap update`
 
 ## Status Report Complete
 
@@ -129,6 +128,5 @@ Use this information to:
 
 **Next steps:**
 
-1. Continue work: `/spec work [feature]`
+1. Continue work: `/spec:work [feature]`
 2. Review spec: `docs/spec/<feature>/spec.md`
-3. Update roadmap: `/product roadmap update`

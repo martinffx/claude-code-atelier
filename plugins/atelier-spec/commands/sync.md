@@ -5,7 +5,7 @@
 @context verify spec exists.
 
 Check if spec exists:
-- If `docs/spec/$ARGUMENTS/spec.md` does NOT exist → ERROR: "No spec found. Use /spec create to create a spec first."
+- If `docs/spec/$ARGUMENTS/spec.md` does NOT exist → ERROR: "No spec found. Use /spec:create to create a spec first."
 
 ## Step 2: Find Code Location
 
@@ -181,6 +181,6 @@ The spec now reflects actual code state.
 **Next steps:**
 
 1. Review synced spec: `docs/spec/$ARGUMENTS/spec.md`
-2. Address incomplete work: `/spec work $ARGUMENTS`
-3. Propose new changes: `/change propose $ARGUMENTS <change>`
-4. Check status: `/spec status $ARGUMENTS`
+2. Address incomplete work: `/spec:work $ARGUMENTS`
+3. Propose new changes: `/spec:propose $ARGUMENTS <change>`
+4. Check status: `/spec:status $ARGUMENTS`

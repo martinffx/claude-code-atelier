@@ -25,7 +25,7 @@ bd ready --json
 ```
 
 Parse result:
-- If no ready tasks → REPORT: "No ready tasks. Check status: /spec status [feature]"
+- If no ready tasks → REPORT: "No ready tasks. Check status: /spec:status [feature]"
 - If ready tasks found → Select first task
 
 Mark task in progress:
@@ -213,6 +213,6 @@ Next ready task: [task-id and description] or "None - feature complete"
 
 **Next steps:**
 
-1. Continue next task: `/spec work [feature]`
-2. Check feature progress: `/spec status [feature]`
-3. Complete change: `/change complete <feature> <change>` (if working on a change)
+1. Continue next task: `/spec:work [feature]`
+2. Check feature progress: `/spec:status [feature]`
+3. Complete change: `/spec:complete <feature> <change>` (if working on a change)

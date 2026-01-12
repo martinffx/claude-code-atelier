@@ -4,12 +4,12 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ## Plugins
 
-| Plugin | Description | Skills |
-|--------|-------------|--------|
-| **spec** | Core SDD workflows for feature specifications and product management | atelier-spec, atelier-change, atelier-product |
-| **code** | Code quality workflows for reviews and commits | atelier-review, atelier-commit |
-| **oracle** | Deep thinking and debugging with sequential reasoning | atelier-debug, atelier-challenge, atelier-thinkdeep |
-| **typescript** | TypeScript ecosystem patterns (auto-invoked) | api-design, dynamodb-toolbox, drizzle-orm, fastify-typebox |
+| Plugin | Description | Type |
+|--------|-------------|------|
+| **spec** | Feature specification workflows (6 commands + 2 skills) | Commands + Skills |
+| **code** | Code quality workflows | Skills |
+| **oracle** | Deep thinking and debugging | Skills |
+| **typescript** | TypeScript ecosystem patterns (auto-invoked) | Skills |
 
 ## Installation
 
@@ -24,30 +24,46 @@ A software development atelier for Claude Code - spec-driven development, code q
 /plugin install typescript@atelier
 ```
 
-## Skills
+## Development
 
-### spec (Core SDD)
+For local development, use `--plugin-dir` to load plugins directly:
 
 ```bash
-/atelier-spec create <feature>    # Create new feature specification
-/atelier-spec work <feature>      # Implement next ready task
-/atelier-spec status              # Track feature progress
-/atelier-spec sync <feature>      # Update spec from code changes
+# Load entire marketplace
+claude --plugin-dir ./claude-code-atelier
 
-/atelier-change propose <feature> # Propose changes to existing feature
-/atelier-change complete <feature> # Merge delta and close epic
-
-/atelier-product init             # Initialize project documentation
-/atelier-product progress         # Track product status
-/atelier-product roadmap          # Update roadmap priorities
-/atelier-product update           # Update methodology docs
+# Load individual plugins
+claude --plugin-dir ./claude-code-atelier/plugins/atelier-spec
+claude --plugin-dir ./claude-code-atelier/plugins/atelier-code
+claude --plugin-dir ./claude-code-atelier/plugins/atelier-oracle
+claude --plugin-dir ./claude-code-atelier/plugins/atelier-typescript
 ```
+
+Restart Claude Code after making changes to reload plugins.
+
+## Commands & Skills
+
+### spec (Feature Specifications)
+
+**Commands:**
+```bash
+/spec:create <feature>             # Create new feature specification (auto-init)
+/spec:propose <feature> <change>   # Propose changes to existing feature
+/spec:sync <feature>               # Update spec from code changes
+/spec:work <feature>               # Implement next ready task
+/spec:complete <feature> <change>  # Complete changes and merge delta
+/spec:status                       # Track feature progress
+```
+
+**Skills (auto-invoked):**
+- `project-structure` - Project structure patterns and initialization
+- `methodology` - SDD principles, TDD workflows, architecture patterns
 
 ### code
 
 ```bash
-/atelier-review                # Review code changes as senior engineer
-/atelier-commit [message]      # Create well-crafted conventional commit
+/code:review                # Review code changes as senior engineer
+/code:commit [message]      # Create well-crafted conventional commit
 ```
 
 ### oracle

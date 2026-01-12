@@ -1,21 +1,19 @@
 # Code
 
-Code quality workflows for reviewing changes, creating commits, and validating builds.
+Code quality workflows for reviewing changes and creating commits.
 
-## Skills
+## Commands
 
-| Skill | Type | Description |
-|-------|------|-------------|
-| atelier-review | User-invocable | Review code changes as senior engineer |
-| atelier-commit | User-invocable | Create well-crafted conventional commits |
-| reviewing-code | Reference | Code review patterns (auto-loaded) |
-| generating-commits | Reference | Commit message conventions (auto-loaded) |
+| Command | Description |
+|---------|-------------|
+| /code:review | Review code changes as senior engineer |
+| /code:commit | Create well-crafted conventional commits |
 
 ## Usage
 
 ```bash
-/atelier-review            # Review code changes as senior engineer
-/atelier-commit [message]  # Create well-crafted conventional commit
+/code:review            # Review code changes as senior engineer
+/code:commit [message]  # Create well-crafted conventional commit
 ```
 
 ## Quick Reference
@@ -37,11 +35,22 @@ Code quality workflows for reviewing changes, creating commits, and validating b
 - **Important**: Bugs, performance, patterns
 - **Minor**: Naming, style, edge cases
 
+## Shared Agents
+
+For enhanced workflows, install the **spec** plugin which provides shared agents:
+
+| Agent | Purpose |
+|-------|---------|
+| atelier-architect | Technical design decisions |
+| atelier-oracle | Requirements and strategic thinking |
+| atelier-clerk | Fast utility tasks |
+
 ## Installation
 
 ```bash
 /plugin marketplace add martinffx/claude-code-atelier
 /plugin install code@atelier
+/plugin install spec@atelier  # Recommended: provides shared agents
 ```
 
 ## License

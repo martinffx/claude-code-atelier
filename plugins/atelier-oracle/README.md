@@ -36,11 +36,22 @@ Deep thinking and debugging workflows using sequential reasoning for complex pro
 - **Data Bisect**: Find problematic input by testing subsets
 - **Systematic**: Multi-factor investigation when no clear boundaries
 
+## Shared Agents
+
+For enhanced workflows, install the **spec** plugin which provides shared agents:
+
+| Agent | Purpose |
+|-------|---------|
+| atelier-architect | Technical design decisions |
+| atelier-oracle | Requirements and strategic thinking |
+| atelier-clerk | Fast utility tasks |
+
 ## Installation
 
 ```bash
 /plugin marketplace add martinffx/claude-code-atelier
 /plugin install oracle@atelier
+/plugin install spec@atelier  # Recommended: provides shared agents
 ```
 
 ## License

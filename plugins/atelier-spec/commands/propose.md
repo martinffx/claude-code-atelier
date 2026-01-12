@@ -7,7 +7,7 @@ Format: `<feature_name> <change_name>`
 @context check for existing spec and Beads installation.
 
 Check if spec exists:
-- If `docs/spec/$FEATURE/spec.md` doesn't exist → ERROR: "Feature spec not found. Create with: /spec create $FEATURE"
+- If `docs/spec/$FEATURE/spec.md` doesn't exist → ERROR: "Feature spec not found. Create with: /spec:create $FEATURE"
 
 Check Beads installation:
 ```bash
@@ -127,5 +127,5 @@ The change proposal includes:
 **Next steps:**
 
 1. Review the proposal and delta
-2. Begin implementation: `/spec work $FEATURE`
-3. When complete: `/change complete $FEATURE $CHANGE`
+2. Begin implementation: `/spec:work $FEATURE`
+3. When complete: `/spec:complete $FEATURE $CHANGE`

@@ -1,11 +1,46 @@
 # Initialize Feature Spec: $ARGUMENTS
 
+## Step 0: Check Project Structure
+
+@context check if project has SDD structure initialized.
+
+Check for required directories:
+```bash
+test -d docs/spec && test -d docs/product
+```
+
+If directories don't exist, initialize project structure first:
+
+1. Create directory structure:
+```bash
+mkdir -p docs/spec docs/product docs/standards
+```
+
+2. Create minimal product.md:
+```
+# Product Overview
+
+Define your product vision and target users here.
+
+## Core Features
+
+1. [Feature 1]
+2. [Feature 2]
+3. [Feature 3]
+```
+
+3. Create minimal standards (if none exist):
+- `docs/standards/coding.md` - TDD patterns, coding conventions
+- `docs/standards/architecture.md` - Architecture patterns
+
+4. Continue to feature spec creation
+
 ## Step 1: Validate Prerequisites
 
 @context check for existing spec and Beads installation.
 
 Check if spec already exists:
-- If `docs/spec/$ARGUMENTS/spec.md` exists → ERROR: "Spec already exists. Use /change propose for changes."
+- If `docs/spec/$ARGUMENTS/spec.md` exists → ERROR: "Spec already exists. Use /spec:propose for changes."
 
 Check Beads installation:
 ```bash
@@ -193,5 +228,5 @@ The specification includes:
 **Next steps:**
 
 1. Review the generated specification
-2. Begin implementation: `/spec work $ARGUMENTS`
-3. Check progress: `/spec status $ARGUMENTS`
+2. Begin implementation: `/spec:work $ARGUMENTS`
+3. Check progress: `/spec:status $ARGUMENTS`

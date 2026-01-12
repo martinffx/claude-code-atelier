@@ -7,7 +7,7 @@ Format: `<feature_name> <change_name>`
 @context check for change proposal and Beads epic.
 
 Check if change exists:
-- If `docs/changes/$FEATURE/$CHANGE/` doesn't exist → ERROR: "Change proposal not found. Create with: /change propose $FEATURE $CHANGE"
+- If `docs/changes/$FEATURE/$CHANGE/` doesn't exist → ERROR: "Change proposal not found. Create with: /spec:propose $FEATURE $CHANGE"
 
 Check Beads epic:
 ```bash
@@ -89,6 +89,6 @@ The specification now includes:
 **Next steps:**
 
 1. Review updated spec: `docs/spec/$FEATURE/spec.md`
-2. Commit changes: `/code commit`
-3. Start next change: `/change propose $FEATURE <new_change>`
-4. Or start new feature: `/spec create <new_feature>`
+2. Commit changes: `/atelier-commit`
+3. Start next change: `/spec:propose $FEATURE <new_change>`
+4. Or start new feature: `/spec:create <new_feature>`

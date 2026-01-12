@@ -1,41 +1,58 @@
 # Spec
 
-Spec-Driven Development workflows for feature specifications, change management, and product documentation.
+Feature specification workflows for Spec-Driven Development. Includes 6 commands and 2 skills for comprehensive SDD support.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| /spec:create | Create new feature specification (auto-init if needed) |
+| /spec:propose | Propose changes to existing feature |
+| /spec:sync | Update spec from code changes |
+| /spec:work | Implement next ready task |
+| /spec:complete | Complete changes and merge delta |
+| /spec:status | Track feature progress via Beads |
 
 ## Skills
 
-| Skill | Type | Description |
-|-------|------|-------------|
-| atelier-spec | User-invocable | Feature specification lifecycle management |
-| atelier-change | User-invocable | Brownfield change management with delta tracking |
-| atelier-product | User-invocable | Product documentation and roadmap management |
+| Skill | Description |
+|-------|-------------|
+| project-structure | Project structure patterns, initialization guidance (auto-invoked) |
+| methodology | SDD principles, TDD workflows, architecture patterns (auto-invoked) |
 
 ## Usage
 
-### Spec (Feature Specifications)
-
 ```bash
-/atelier-spec create <feature>   # Create new feature specification
-/atelier-spec work <feature>     # Implement next ready task
-/atelier-spec status             # Track feature progress via Beads
-/atelier-spec sync <feature>     # Update spec from code changes
+# Create feature (auto-initializes project on first run)
+/spec:create <feature>
+
+# Propose changes to existing feature
+/spec:propose <feature> <change>
+
+# Implement tasks
+/spec:work <feature>
+
+# Complete changes
+/spec:complete <feature> <change>
+
+# Track progress
+/spec:status
+
+# Update spec from code
+/spec:sync <feature>
 ```
 
-### Change (Brownfield Development)
+## Agents
 
-```bash
-/atelier-change propose <feature>  # Propose changes to existing feature
-/atelier-change complete <feature> # Merge delta into spec and close epic
-```
+Specialized agents for SDD workflows. Claude delegates to these automatically based on task context.
 
-### Product (Documentation)
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| atelier-architect | opus | Technical design, data modeling, API design, task breakdown |
+| atelier-oracle | opus | Requirements gathering, strategic thinking, progress tracking |
+| atelier-clerk | haiku | Fast utility tasks, file operations, context retrieval |
 
-```bash
-/atelier-product init       # Initialize project documentation
-/atelier-product progress   # Track product status
-/atelier-product roadmap    # Update roadmap priorities
-/atelier-product update     # Update methodology docs
-```
+View available agents with `/agents`.
 
 ## Prerequisites
 
