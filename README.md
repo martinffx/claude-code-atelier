@@ -6,7 +6,7 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ## Plugins
 
-### 🎯 [spec](plugins/atelier-spec/README.md) - Spec-Driven Development
+### [spec](plugins/atelier-spec/README.md) - Spec-Driven Development
 
 **Ship features in ~4 hours** from idea to deployed code using AI-assisted implementation with structured specifications.
 
@@ -30,7 +30,7 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ---
 
-### 🔍 [code](plugins/atelier-code/README.md) - Code Quality
+### [code](plugins/atelier-code/README.md) - Code Quality
 
 **Senior engineer reviews and conventional commits** that follow your project standards.
 
@@ -49,7 +49,7 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ---
 
-### 🧠 [oracle](plugins/atelier-oracle/README.md) - Deep Thinking
+### [oracle](plugins/atelier-oracle/README.md) - Deep Thinking
 
 **Sequential reasoning and systematic debugging** for complex problems that need deeper analysis.
 
@@ -71,7 +71,7 @@ Plus 2 auto-invoked skills: `atelier-challenge` (critical thinking), `atelier-th
 
 ---
 
-### ⚡ [typescript](plugins/atelier-typescript/README.md) - TypeScript Patterns
+### [typescript](plugins/atelier-typescript/README.md) - TypeScript Patterns
 
 **Production-ready patterns** for the TypeScript ecosystem - **automatically loaded** when relevant.
 
