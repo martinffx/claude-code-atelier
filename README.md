@@ -1,5 +1,7 @@
 # Claude Code Atelier
 
+![Atelier - A collaborative workshop for software development](atelier.jpg)
+
 A software development atelier for Claude Code - spec-driven development, code quality, deep thinking, and TypeScript patterns.
 
 ## Plugins
