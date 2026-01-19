@@ -4,12 +4,85 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ## Plugins
 
-| Plugin | Description | Type |
-|--------|-------------|------|
-| **spec** | Feature specification workflows (6 commands + 2 skills) | Commands + Skills |
-| **code** | Code quality workflows (2 commands) | Commands |
-| **oracle** | Deep thinking and debugging (1 command + 2 skills) | Commands + Skills |
-| **typescript** | TypeScript ecosystem patterns (auto-invoked) | Skills |
+### 🎯 [spec](plugins/atelier-spec/README.md) - Spec-Driven Development
+
+**Ship features in ~4 hours** from idea to deployed code using AI-assisted implementation with structured specifications.
+
+**Why SDD?**
+- **Lightweight documentation over heavyweight planning** - Replace PRDs with minimal business context + detailed implementation specs
+- **Dependency-driven over sprint-driven** - Order tasks by technical requirements (Entity → Repository → Service → Router)
+- **AI-assisted implementation** - Structured specs enable AI agents to make informed technical decisions without constant prompting
+- **Prevention over debugging** - Spot issues in design, not production
+- **Enforced patterns** - Layered architecture with domain-driven design and layer boundary testing
+
+**What you get:** 6 commands + 2 auto-invoked skills + 3 specialized agents (architect, oracle, clerk)
+
+```bash
+/spec:create <feature>   # Greenfield: Create new feature spec with Beads epic
+/spec:propose <change>   # Brownfield: Propose changes to existing features
+/spec:work <feature>     # AI-driven implementation with stub→test→fix workflow
+/spec:status             # Track progress across all features
+```
+
+[→ Full spec plugin documentation](plugins/atelier-spec/README.md)
+
+---
+
+### 🔍 [code](plugins/atelier-code/README.md) - Code Quality
+
+**Senior engineer reviews and conventional commits** that follow your project standards.
+
+**What it does:**
+- Reviews code changes against architectural patterns and standards
+- Identifies security vulnerabilities, performance issues, maintainability concerns
+- Generates conventional commits with proper scope and detailed context
+- Enforces consistency across your codebase
+
+```bash
+/code:review             # Get senior engineer perspective on changes
+/code:commit [message]   # Create well-crafted conventional commit
+```
+
+[→ Full code plugin documentation](plugins/atelier-code/README.md)
+
+---
+
+### 🧠 [oracle](plugins/atelier-oracle/README.md) - Deep Thinking
+
+**Sequential reasoning and systematic debugging** for complex problems that need deeper analysis.
+
+**When to use:**
+- Complex bugs that require investigation across multiple layers
+- Architecture decisions with multiple trade-offs
+- Performance bottlenecks that need systematic profiling
+- Problems where the root cause isn't immediately obvious
+
+**Debug strategies:** Git bisect, code bisect, data bisect, systematic multi-factor investigation
+
+```bash
+/oracle:debug <error>    # Systematic debugging with bisect methodology
+```
+
+Plus 2 auto-invoked skills: `atelier-challenge` (critical thinking), `atelier-thinkdeep` (extended reasoning)
+
+[→ Full oracle plugin documentation](plugins/atelier-oracle/README.md)
+
+---
+
+### ⚡ [typescript](plugins/atelier-typescript/README.md) - TypeScript Patterns
+
+**Production-ready patterns** for the TypeScript ecosystem - **automatically loaded** when relevant.
+
+**Coverage:**
+- **REST API design** - Resource naming, HTTP methods, error responses, pagination, versioning
+- **DynamoDB Toolbox v2** - Single-table design, entity definitions, GSI patterns, queries
+- **Drizzle ORM** - Type-safe SQL for PostgreSQL/MySQL/SQLite/Cloudflare D1/Durable Objects
+- **Fastify + TypeBox** - Route handlers, validation, type-safe APIs
+- **Build Tools** - Bun, tsgo, Vitest, Biome, Turborepo configurations
+
+No commands needed - patterns are auto-invoked when working with these technologies.
+
+[→ Full typescript plugin documentation](plugins/atelier-typescript/README.md)
 
 ## Installation
 
@@ -40,49 +113,6 @@ claude --plugin-dir ./claude-code-atelier/plugins/atelier-typescript
 ```
 
 Restart Claude Code after making changes to reload plugins.
-
-## Commands & Skills
-
-### spec (Feature Specifications)
-
-**Commands:**
-```bash
-/spec:create <feature>             # Create new feature specification (auto-init)
-/spec:propose <feature> <change>   # Propose changes to existing feature
-/spec:sync <feature>               # Update spec from code changes
-/spec:work <feature>               # Implement next ready task
-/spec:complete <feature> <change>  # Complete changes and merge delta
-/spec:status                       # Track feature progress
-```
-
-**Skills (auto-invoked):**
-- `project-structure` - Project structure patterns and initialization
-- `methodology` - SDD principles, TDD workflows, architecture patterns
-
-### code
-
-```bash
-/code:review                # Review code changes as senior engineer
-/code:commit [message]      # Create well-crafted conventional commit
-```
-
-### oracle
-
-```bash
-/oracle:debug <error>  # Systematic debugging with bisect
-```
-
-**Skills (auto-invoked):**
-- `atelier-challenge` - Challenge approaches with critical thinking
-- `atelier-thinkdeep` - Extended reasoning analysis
-
-### typescript
-
-Model-invoked (no slash command). Automatically loads relevant patterns when working with:
-- REST API design
-- DynamoDB with dynamodb-toolbox v2
-- Drizzle ORM for PostgreSQL/MySQL/SQLite
-- Fastify with TypeBox
 
 ## Structure
 
@@ -130,12 +160,21 @@ claude-code-atelier/
 
 ## Architecture
 
-Based on Daniel Miessler's PAI (Personal AI Infrastructure) pattern:
+The repository follows Daniel Miessler's PAI (Personal AI Infrastructure) pattern:
 
-- **Skills** - Router files (SKILL.md) that direct to appropriate workflows or references
-- **Workflows** - Step-by-step procedures invoked via `/skill workflow` syntax
-- **References** - Pattern knowledge loaded contextually (not directly invoked)
+- **Commands** - User-invocable workflows triggered via `/command:name` syntax
+- **Skills** - Auto-invoked contextual knowledge loaded when relevant
+- **Agents** - Internal agent personas (@agent-name) for specialized thinking
 - **Templates** - Document templates for specs, proposals, and deltas
+
+### Plugin Structure
+
+Each plugin lives in `plugins/atelier-{name}/` with:
+- `.claude-plugin/plugin.json` - Plugin metadata and configuration
+- `commands/*.md` - Command implementations (user-invoked via `/command`)
+- `skills/*/SKILL.md` - Skill definitions (auto-invoked based on description)
+- `agents/*.md` - Agent persona definitions (invoked via @agent-name)
+- `assets/templates/*.md` - Document templates
 
 ## License
 
