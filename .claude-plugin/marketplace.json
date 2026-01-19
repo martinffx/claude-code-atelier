@@ -1,28 +1,34 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "atelier",
+  "description": "Personal development toolkit - spec-driven development, code quality, deep thinking, and TypeScript patterns",
   "owner": {
     "name": "Martin Richards"
-  },
-  "metadata": {
-    "description": "Personal development toolkit - spec-driven development, code quality, deep thinking, and TypeScript patterns",
-    "version": "1.0.0"
   },
   "plugins": [
     {
       "name": "spec",
-      "source": { "source": "relative", "path": "./plugins/atelier-spec" }
+      "description": "Spec-Driven Development workflows with unified requirements and technical design",
+      "source": "./plugins/atelier-spec",
+      "category": "development"
     },
     {
       "name": "code",
-      "source": { "source": "relative", "path": "./plugins/atelier-code" }
+      "description": "Code quality workflows including senior engineer reviews and conventional commits",
+      "source": "./plugins/atelier-code",
+      "category": "productivity"
     },
     {
       "name": "oracle",
-      "source": { "source": "relative", "path": "./plugins/atelier-oracle" }
+      "description": "Deep thinking and sequential reasoning for complex debugging and problem-solving",
+      "source": "./plugins/atelier-oracle",
+      "category": "development"
     },
     {
       "name": "typescript",
-      "source": { "source": "relative", "path": "./plugins/atelier-typescript" }
+      "description": "TypeScript ecosystem patterns for DynamoDB, Drizzle, Fastify, and API design",
+      "source": "./plugins/atelier-typescript",
+      "category": "development"
     }
   ]
 }
