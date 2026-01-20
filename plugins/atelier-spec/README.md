@@ -88,11 +88,11 @@ Stories    & APIs       Strategy
 Bounded Context
 ┌────────────────────────────────────────────────────────────────┐
 │   Effectful Edge (IO)              Functional Core (Pure)      │
-│   ┌──────────────────┐             ┌──────────────────┐       │
-│   │ Router           │────────────▶│ Service          │       │
-│   │ Repository       │◀────────────│ Entity/Aggregate │       │
-│   │ Consumer/Producer│◀── Events ──│                  │       │
-│   └──────────────────┘             └──────────────────┘       │
+│   ┌──────────────────┐             ┌──────────────────┐        │
+│   │ Router           │────────────▶│ Service          │        │
+│   │ Repository       │◀────────────│ Entity/Aggregate │        │
+│   │ Consumer/Producer│◀── Events ──│                  │        │
+│   └──────────────────┘             └──────────────────┘        │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -117,7 +117,8 @@ Test at layer boundaries: Core (unit tests with stubs) vs Edge (integration test
 
 | Command | Description |
 |---------|-------------|
-| /spec:create | Create new feature specification (auto-init if needed) |
+| /spec:init | Initialize repository for Spec-Driven Development |
+| /spec:create | Create new feature specification |
 | /spec:propose | Propose changes to existing feature |
 | /spec:sync | Update spec from code changes |
 | /spec:work | Implement next ready task |
@@ -137,7 +138,10 @@ Test at layer boundaries: Core (unit tests with stubs) vs Edge (integration test
 ## Usage
 
 ```bash
-# Greenfield: Create feature (auto-initializes project on first run)
+# Initialize project for SDD (one-time setup)
+/spec:init
+
+# Greenfield: Create feature specification
 /spec:create <feature>
 
 # Brownfield: Propose changes to existing feature
@@ -158,8 +162,8 @@ Test at layer boundaries: Core (unit tests with stubs) vs Edge (integration test
 
 ## Prerequisites
 
-- Beads CLI for task tracking: `npm install -g @beads/bd && bd init`
-- Project structure: `docs/product/`, `docs/spec/`, `docs/standards/`
+- Initialize project structure: Run `/spec:init` (sets up `docs/product/`, `docs/spec/`, `docs/standards/`)
+- Beads CLI for task tracking (optional): `npm install -g @beads/bd`
 
 ## Installation
 

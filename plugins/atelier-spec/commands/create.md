@@ -1,41 +1,20 @@
 # Initialize Feature Spec: $ARGUMENTS
 
-## Step 0: Check Project Structure
+## Step 1: Check Project Initialization
 
-@context check if project has SDD structure initialized.
+@context verify project has been initialized for SDD.
 
-Check for required directories:
+Check if product document exists:
 ```bash
-test -d docs/spec && test -d docs/product
+test -f docs/product/product.md
 ```
 
-If directories don't exist, initialize project structure first:
+If `docs/product/product.md` does NOT exist:
+- ERROR: "Project not initialized for Spec-Driven Development."
+- Instruct user: "Run `/spec:init` first to set up the project structure."
+- EXIT
 
-1. Create directory structure:
-```bash
-mkdir -p docs/spec docs/product docs/standards
-```
-
-2. Create minimal product.md:
-```
-# Product Overview
-
-Define your product vision and target users here.
-
-## Core Features
-
-1. [Feature 1]
-2. [Feature 2]
-3. [Feature 3]
-```
-
-3. Create minimal standards (if none exist):
-- `docs/standards/coding.md` - TDD patterns, coding conventions
-- `docs/standards/architecture.md` - Architecture patterns
-
-4. Continue to feature spec creation
-
-## Step 1: Validate Prerequisites
+## Step 2: Validate Prerequisites
 
 @context check for existing spec and Beads installation.
 
@@ -48,7 +27,7 @@ bd --version
 ```
 - If command fails → ERROR: "Beads not found. Install with: npm install -g @beads/bd, then run: bd init"
 
-## Step 2: Detect Existing Code
+## Step 3: Detect Existing Code
 
 @context search for existing code using multiple strategies.
 
@@ -77,7 +56,7 @@ If code found:
 If no code found:
 - Set mode: GREENFIELD
 
-## Step 3: Gather Requirements
+## Step 4: Gather Requirements
 
 @analyst conduct structured interview based on mode.
 
@@ -117,7 +96,7 @@ Show discovered code structure to user.
 
 [Wait for responses]
 
-## Step 4: Load Project Context
+## Step 5: Load Project Context
 
 @context retrieve relevant project information.
 
@@ -132,7 +111,7 @@ Extract context on:
 - Architecture patterns to follow
 - Technology stack conventions
 
-## Step 5: Generate Technical Design
+## Step 6: Generate Technical Design
 
 @architect create technical design following project standards.
 
@@ -159,7 +138,7 @@ Apply architectural patterns based on requirements:
 
 **Design only what's needed** - contextual layer detection.
 
-## Step 6: Create Specification Document
+## Step 7: Create Specification Document
 
 @scaffold generate unified spec.md with requirements and design.
 
@@ -184,7 +163,7 @@ Create `docs/spec/$ARGUMENTS/spec.md` containing:
 
 Apply template from `${CLAUDE_PLUGIN_ROOT}/assets/templates/spec.md`
 
-## Step 7: Create Beads Epic with Contextual Tasks
+## Step 8: Create Beads Epic with Contextual Tasks
 
 @architect analyze design and create dependency-aware tasks.
 
