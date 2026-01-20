@@ -23,7 +23,7 @@ Unified view of functional core and effectful edge:
 └─────────────────────────────────┘    └──────────────────────────┘
 ```
 
-**Key Principle:** Business logic lives in the functional core (Service + Entity). IO operations live in the effectful edge. Core never depends on edge.
+**Key Principle:** Business logic lives in the functional core (Service + Entity). IO operations live in the effectful edge. Core defines interfaces; edge implements them (dependency inversion).
 
 ## Functional Core
 
@@ -297,6 +297,55 @@ await eventBus.publish(new OrderPlaced(order.id, order.customerId, new Date()));
 - Contexts communicate via well-defined contracts
 - Same concept may have different models in different contexts
 - Example: "Customer" in Sales context vs "User" in Auth context
+
+## Putting It Together
+
+How DDD patterns compose with the Functional Core / Effectful Edge architecture:
+
+```
+Bounded Context: "Orders"
+┌────────────────────────────────────────────────────────────────┐
+│                                                                │
+│   Effectful Edge                    Functional Core            │
+│   ┌──────────────────┐             ┌──────────────────┐       │
+│   │ Router           │────────────▶│ Service          │       │
+│   │ POST /orders     │             │ OrderService     │       │
+│   └──────────────────┘             └────────┬─────────┘       │
+│                                              │                 │
+│   ┌──────────────────┐             ┌────────▼─────────┐       │
+│   │ Repository       │◀────────────│ Aggregate        │       │
+│   │ OrderRepository  │             │ Order (root)     │       │
+│   └──────────────────┘             │ └─ OrderItem[]   │       │
+│                                    │ └─ Money (VO)    │       │
+│   ┌──────────────────┐             └──────────────────┘       │
+│   │ Producer         │◀── Domain Event: OrderPlaced           │
+│   └────────┬─────────┘                                        │
+└────────────│───────────────────────────────────────────────────┘
+             │
+             ▼ Events cross context boundaries
+┌────────────────────────────────────────────────────────────────┐
+│ Bounded Context: "Inventory"                                   │
+│   Consumer ──▶ InventoryService ──▶ StockLevel (Aggregate)     │
+└────────────────────────────────────────────────────────────────┘
+```
+
+**Composition Rules:**
+
+| DDD Pattern | Maps To | Location |
+|-------------|---------|----------|
+| Bounded Context | Module/Package boundary | Contains all layers |
+| Aggregate | Entity cluster | Functional Core |
+| Aggregate Root | Primary Entity | Entity layer |
+| Value Object | Immutable type | Entity layer |
+| Domain Event | Event class | Published from Service, consumed by edge |
+| Repository | Data access | Effectful Edge (interface in Core) |
+
+**Key Interactions:**
+1. **Router → Service**: HTTP request parsed, passed to service
+2. **Service → Aggregate**: Service orchestrates aggregate operations
+3. **Aggregate → Repository**: Service uses repository to persist aggregate
+4. **Service → Producer**: Service publishes domain events after state change
+5. **Consumer → Service**: Events from other contexts trigger service operations
 
 ## Data Modeling
 

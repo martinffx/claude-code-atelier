@@ -57,15 +57,53 @@ Specialized subagents invoked via `@agent-name` during command execution.
 | **oracle** | opus | Requirements interviews, strategic analysis, progress recommendations |
 | **clerk** | haiku | Fast context retrieval, file scaffolding, template application |
 
+## Skills vs Agents
+
+Two complementary systems work together:
+
+| Concept | Invocation | Purpose | Examples |
+|---------|------------|---------|----------|
+| **Agents** | Explicit via `@agent-name` | Execute tasks during commands | @clerk, @oracle, @architect |
+| **Skills** | Auto-invoked by context | Provide domain knowledge | product, architect, testing |
+
+**Agents** are personas that perform actions during command execution (e.g., @oracle conducts interviews, @architect designs systems).
+
+**Skills** are contextual knowledge auto-loaded when relevant (e.g., architect skill provides DDD patterns when designing, testing skill provides TDD guidance when writing tests).
+
+Skills flow through the specification process:
+
+```
+Product → Architect → Testing
+  │           │           │
+  ▼           ▼           ▼
+Scope &    Data Model   Test
+Stories    & APIs       Strategy
+```
+
 ## Architecture Patterns
 
-### Layered Dependencies (Bottom-Up)
+### Functional Core / Effectful Edge
 
 ```
-Entity → Repository → Service → Router
+Bounded Context
+┌────────────────────────────────────────────────────────────────┐
+│   Effectful Edge (IO)              Functional Core (Pure)      │
+│   ┌──────────────────┐             ┌──────────────────┐       │
+│   │ Router           │────────────▶│ Service          │       │
+│   │ Repository       │◀────────────│ Entity/Aggregate │       │
+│   │ Consumer/Producer│◀── Events ──│                  │       │
+│   └──────────────────┘             └──────────────────┘       │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-Each layer depends only on layers below. Beads enforces this via `bd dep add`.
+**Key Principle:** Business logic lives in the functional core (Service + Entity). IO operations live in the effectful edge. Core defines interfaces; edge implements them (dependency inversion).
+
+### DDD Patterns
+
+- **Bounded Context** - Module boundary containing all layers for a domain
+- **Aggregates** - Entity clusters with a root that enforces invariants
+- **Value Objects** - Immutable objects defined by attributes, not identity
+- **Domain Events** - Cross context boundaries via Producer/Consumer
 
 ### Stub-Driven TDD
 
@@ -73,11 +111,7 @@ Each layer depends only on layers below. Beads enforces this via `bd dep add`.
 Stub → Test → Implement → Refactor
 ```
 
-Test at layer boundaries, not every method.
-
-### Contextual Layer Detection
-
-Only create tasks for layers actually needed. A simple service change doesn't require entity/repository tasks.
+Test at layer boundaries: Core (unit tests with stubs) vs Edge (integration tests).
 
 ## Commands
 
@@ -94,11 +128,11 @@ Only create tasks for layers actually needed. A simple service change doesn't re
 
 | Skill | Description |
 |-------|-------------|
-| project-structure | Project structure patterns, initialization guidance (auto-invoked) |
-| methodology | SDD principles, TDD workflows, architecture patterns (auto-invoked) |
-| product | Requirements discovery and scope definition (auto-invoked) |
-| architect | DDD and hexagonal architecture with functional core pattern (auto-invoked) |
-| testing | Stub-Driven TDD and layer boundary testing (auto-invoked) |
+| project-structure | Directory layout implementing 3-layer context model |
+| methodology | AgentOS context layers, orchestrated delegation, living specs |
+| product | Requirements discovery, scope definition, user story extraction |
+| architect | DDD and hexagonal architecture with functional core pattern |
+| testing | Stub-Driven TDD and layer boundary testing strategy |
 
 ## Usage
 
