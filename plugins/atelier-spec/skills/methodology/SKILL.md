@@ -1,170 +1,82 @@
 ---
 name: methodology
-description: Spec-Driven Development methodology and standards patterns. Use when explaining SDD principles, TDD workflows, architecture patterns, or migrating from SDD v1 to v2.
+description: AgentOS 3-layer context, orchestrated delegation, and OpenSpec living specifications. Use when explaining how context flows through layers, how agents collaborate, or how specs evolve.
 user-invocable: false
 ---
 
 # Spec-Driven Development Methodology
 
-Core principles and patterns for Spec-Driven Development.
+This plugin combines three innovations: AgentOS context layers and delegation, OpenSpec living specifications, and Beads dependency tracking.
 
-## Core Principles
+## 3-Layer Context Model (AgentOS)
 
-### Layered Architecture
+Rather than overwhelming agents with all knowledge at once, provide contextually relevant information at the right moments:
 
-Bottom-up dependency flow:
+| Layer | Contains | Purpose | Location |
+|-------|----------|---------|----------|
+| **Standards** | Coding conventions, architecture patterns | How you build | `docs/standards/` |
+| **Product** | Mission, users, roadmap | What and why | `docs/product/` |
+| **Specs** | Requirements, design, tasks | What to build next | `docs/spec/<feature>/` |
 
-```
-Router → Service → Repository → Entity → Database
-```
+Agents load only the context layer they need for their current task.
 
-- **Entity**: Domain models, data transformations, validation
-- **Repository**: Data access layer, database operations
-- **Service**: Business logic, orchestration
-- **Router**: HTTP/API layer, request/response handling
+## Workflow Phases (AgentOS)
 
-### Stub-Driven TDD Workflow
+| AgentOS Phase | Our Command | Agents Used |
+|---------------|-------------|-------------|
+| Plan Product | (manual) | - |
+| Shape Spec | `/spec:create` | clerk → oracle |
+| Write Spec | `/spec:create` | architect → clerk |
+| Create Tasks | `/spec:create` | architect (Beads) |
+| Implement Tasks | `/spec:work` | direct implementation |
+| Orchestrate Tasks | `/spec:work` | architect delegation |
 
-```
-Stub → Test → Implement → Refactor
-```
+## Orchestrated Delegation
 
-1. **Stub**: Create interface/skeleton with mock implementations
-2. **Test**: Write tests at layer boundaries
-3. **Implement**: Fill in real implementation
-4. **Refactor**: Clean up while tests pass
+Commands delegate to specialized subagents with controlled context:
 
-### Layer Boundary Testing
+| Agent | Model | Role |
+|-------|-------|------|
+| **clerk** | haiku | Fast context retrieval, file scaffolding |
+| **oracle** | opus | Requirements interviews, strategic analysis |
+| **architect** | opus | Technical design, task breakdown |
 
-Test at component boundaries, not every method:
+Pattern: Primary agent delegates to specialized subagents rather than trying to do everything itself.
 
-- **Router**: HTTP request → mock Service → HTTP response
-- **Service**: Entity in → mock Repository → Entity out
-- **Repository**: Entity → real database → Entity
+## Living Specifications (OpenSpec)
 
-### Domain-Driven Design
+**Core principle**: Align humans and AI on what to build before any code is written.
 
-Entities manage all data transformations:
+### Spec Format
 
-- `fromRequest()` - Parse/validate HTTP request
-- `toRecord()` - Convert to database format
-- `toResponse()` - Format for HTTP response
-- `validate()` - Business rule validation
+- Requirements with SHALL/MUST language
+- Scenarios as acceptance criteria
+- Hierarchical: Requirements contain nested Scenarios
 
-## Template Adaptation Strategy
+### Directory Structure
 
-When applying standards to a new project:
+- `docs/spec/<feature>/spec.md` - Source of truth
+- `docs/changes/<feature>/<change>/` - Proposed changes (proposal.md, delta.md, tasks.md)
 
-1. **Exact Match**: Template exists for detected stack → Use directly
-2. **Similar Match**: Template for same language, different framework → Adapt framework parts
-3. **Language Match**: Template for language only → Use language patterns, add stack-specific sections
-4. **No Match**: Generic standards based on language-agnostic principles
+### Delta Format (Brownfield Changes)
 
-## Language-Agnostic Patterns
+- **ADDED** Requirements - New capabilities
+- **MODIFIED** Requirements - Altered behavior (complete updated text)
+- **REMOVED** Requirements - Deprecated features
 
-These patterns apply regardless of technology stack:
+### Living Spec Cycle
 
-- Dependency injection at boundaries
-- Error handling consistency
-- Separation of concerns
-- Single responsibility principle
-- Test isolation
+1. Draft change proposal
+2. Review until consensus
+3. Implement tasks
+4. Archive change, merge delta into spec
 
-## Standards Documentation
+## Dependency Tracking (Beads)
 
-### coding.md
+Beads enforces implementation order through dependencies:
 
-Contains:
-- TDD implementation patterns
-- Language-specific coding conventions
-- Stub-driven workflow examples
-- Testing strategies
-- Code organization patterns
+- `bd ready` surfaces next unblocked task
+- Dependencies enforce bottom-up implementation (Entity → Repository → Service → Router)
+- Git-backed persistence via `.beads/beads.jsonl`
 
-### architecture.md
-
-Contains:
-- Layered architecture patterns
-- Dependency injection examples
-- Domain-driven design patterns
-- Error handling strategies
-- Integration patterns
-
-## SDD Version 2
-
-### Key Changes from v1
-
-| Aspect | v1 | v2 |
-|--------|----|----|
-| Specs | Separate spec.md + design.md | Unified spec.md |
-| Tasks | tasks.md file | Beads CLI |
-| Metadata | JSON files (requirements, context, plan) | None (streamlined) |
-
-### Migration from v1
-
-Detection indicators:
-- `design.md` files
-- `tasks.md` files
-- `requirements.json`, `context.json`, `plan.json` files
-
-Migration steps:
-1. Merge spec.md + design.md → unified spec.md
-2. Import tasks from tasks.md → Beads
-3. Delete old format files
-4. Update .gitignore for Beads
-
-### Beads Integration
-
-Beads provides dependency-aware task tracking:
-
-```bash
-bd create "Task description" -p 1 -l feature-name
-bd dep add <child-id> <parent-id> --type blocks
-bd ready --label feature-name
-```
-
-.gitignore entries:
-```
-# Beads cache
-.beads/beads.db
-.beads/beads.db-*
-.beads/bd.sock
-
-# Keep .beads/beads.jsonl (issue data)
-```
-
-## Technology Stack Detection
-
-Detect stack by looking for these files:
-
-| Stack | Detection Files |
-|-------|----------------|
-| Rust | `Cargo.toml` |
-| Node.js/TypeScript | `package.json` |
-| Python | `pyproject.toml`, `requirements.txt`, `setup.py` |
-| Go | `go.mod` |
-| Java | `pom.xml`, `build.gradle` |
-| C# | `.csproj`, `packages.config` |
-| Ruby | `Gemfile` |
-| PHP | `composer.json` |
-
-Analyze:
-- Primary programming language
-- Web framework
-- Database technology
-- Testing framework
-- Build system
-
-## Implementation Order
-
-Tasks should be ordered by technical dependency (bottom-up):
-
-```
-1. Entity (data models, validation)
-2. Repository (database layer)
-3. Service (business logic)
-4. Router (API endpoints)
-5. Integration tests
-```
-
-This ensures each layer can be tested against its dependencies.
+Commands like `/spec:create` automatically create Beads epics with tasks ordered by technical dependencies.

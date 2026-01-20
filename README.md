@@ -8,9 +8,6 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ### [spec](plugins/atelier-spec/README.md) - Spec-Driven Development
 
-**Ship features in ~4 hours** from idea to deployed code using AI-assisted implementation with structured specifications.
-
-**Why SDD?**
 - **Lightweight documentation over heavyweight planning** - Replace PRDs with minimal business context + detailed implementation specs
 - **Dependency-driven over sprint-driven** - Order tasks by technical requirements (Entity → Repository → Service → Router)
 - **AI-assisted implementation** - Structured specs enable AI agents to make informed technical decisions without constant prompting
@@ -32,7 +29,7 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ### [code](plugins/atelier-code/README.md) - Code Quality
 
-**Senior engineer reviews and conventional commits** that follow your project standards.
+**Code reviews and conventional commits** that follow your project standards.
 
 **What it does:**
 - Reviews code changes against architectural patterns and standards
@@ -41,7 +38,7 @@ A software development atelier for Claude Code - spec-driven development, code q
 - Enforces consistency across your codebase
 
 ```bash
-/code:review             # Get senior engineer perspective on changes
+/code:review             # Get structured, relevant perspective on changes
 /code:commit [message]   # Create well-crafted conventional commit
 ```
 
@@ -51,15 +48,13 @@ A software development atelier for Claude Code - spec-driven development, code q
 
 ### [oracle](plugins/atelier-oracle/README.md) - Deep Thinking
 
-**Sequential reasoning and systematic debugging** for complex problems that need deeper analysis.
+**Spicier, structured thinking and reasoning** for complex problems that need deeper analysis.
 
 **When to use:**
 - Complex bugs that require investigation across multiple layers
 - Architecture decisions with multiple trade-offs
 - Performance bottlenecks that need systematic profiling
 - Problems where the root cause isn't immediately obvious
-
-**Debug strategies:** Git bisect, code bisect, data bisect, systematic multi-factor investigation
 
 ```bash
 /oracle:debug <error>    # Systematic debugging with bisect methodology

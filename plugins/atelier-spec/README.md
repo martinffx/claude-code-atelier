@@ -96,6 +96,9 @@ Only create tasks for layers actually needed. A simple service change doesn't re
 |-------|-------------|
 | project-structure | Project structure patterns, initialization guidance (auto-invoked) |
 | methodology | SDD principles, TDD workflows, architecture patterns (auto-invoked) |
+| product | Requirements discovery and scope definition (auto-invoked) |
+| architect | DDD and hexagonal architecture with functional core pattern (auto-invoked) |
+| testing | Stub-Driven TDD and layer boundary testing (auto-invoked) |
 
 ## Usage
 
