@@ -51,9 +51,9 @@ Show current feature implementation context.
 **What's the implementation approach?**
 [Wait for response]
 
-## Step 4: Generate Technical Delta
+## Step 4: Generate Draft Artifacts
 
-@architect analyze impact and create delta specification.
+@architect analyze impact and generate draft proposal and delta.
 
 Read:
 - `docs/spec/$FEATURE/spec.md` → current design
@@ -65,58 +65,140 @@ Determine impact:
 - Modified business rules
 - Breaking changes
 
-Generate delta with ADDED/MODIFIED/REMOVED structure.
+<parallel>
+  <agent type="scaffold">
+    Create draft proposal:
+    - Create directory: `docs/changes/$FEATURE/$CHANGE/`
+    - Generate `docs/changes/$FEATURE/$CHANGE/proposal.md` using template `${CLAUDE_PLUGIN_ROOT}/assets/templates/proposal.md`
+      - Set STATUS to "Draft"
+      - Include: motivation, impact analysis, implementation approach
 
-## Step 5: Create Change Documents
+    Return: proposal_path
+  </agent>
 
-@scaffold create proposal and delta files.
+  <agent type="scaffold">
+    Create draft delta:
+    - Generate `docs/changes/$FEATURE/$CHANGE/delta.md` using template `${CLAUDE_PLUGIN_ROOT}/assets/templates/delta.md`
+      - ADDED: New components, methods, fields
+      - MODIFIED: Changed components, methods, rules
+      - REMOVED: Deprecated items
 
-Create directory: `docs/changes/$FEATURE/$CHANGE/`
+    Return: delta_path
+  </agent>
+</parallel>
 
-Files to create:
-1. **proposal.md** - Using template `${CLAUDE_PLUGIN_ROOT}/assets/templates/proposal.md`
-   - Motivation, impact analysis, implementation approach
+Display generated draft artifacts to user with clear indication they are in DRAFT status.
 
-2. **delta.md** - Using template `${CLAUDE_PLUGIN_ROOT}/assets/templates/delta.md`
-   - ADDED: New components, methods, fields
-   - MODIFIED: Changed components, methods, rules
-   - REMOVED: Deprecated items
+## Step 5: Edit Phase
 
-## Step 6: Create Beads Epic with Contextual Tasks
+Present drafts for user review and modification.
 
-@architect generate tasks for affected layers only.
+**Generated draft artifacts:**
+- `docs/changes/$FEATURE/$CHANGE/proposal.md` (Status: Draft)
+- `docs/changes/$FEATURE/$CHANGE/delta.md`
 
-Based on delta, create tasks for **only the layers that are affected**:
+**Review checklist:**
+- [ ] Motivation accurately captures the "why"
+- [ ] Impact analysis covers all affected components
+- [ ] Delta correctly identifies ADDED/MODIFIED/REMOVED items
+- [ ] Breaking changes are documented
+- [ ] Implementation approach is feasible
 
-Example (service + router change):
-```bash
-bd create "Change: $FEATURE - $CHANGE" -t epic -p 1 -l $FEATURE,change
-bd create "$FEATURE service: $CHANGE" -p 1 -l $FEATURE,$CHANGE
-bd create "$FEATURE router: $CHANGE" -p 1 -l $FEATURE,$CHANGE
-bd dep add <router-id> <service-id> --type blocks
-```
+**Options:**
 
-Example (full-stack change):
-```bash
-bd create "Change: $FEATURE - $CHANGE" -t epic -p 1 -l $FEATURE,change
-bd create "$FEATURE entity: $CHANGE" -p 1 -l $FEATURE,$CHANGE
-bd create "$FEATURE repository: $CHANGE" -p 1 -l $FEATURE,$CHANGE
-bd create "$FEATURE service: $CHANGE" -p 1 -l $FEATURE,$CHANGE
-bd create "$FEATURE router: $CHANGE" -p 1 -l $FEATURE,$CHANGE
-bd dep add <repo-id> <entity-id> --type blocks
-bd dep add <service-id> <repo-id> --type blocks
-bd dep add <router-id> <service-id> --type blocks
-```
+1. **Edit proposal.md** - Modify motivation, approach, or risks
+2. **Edit delta.md** - Adjust technical changes
+3. **Continue to review** - Proceed to validation phase
 
-Store epic ID for output.
+[Wait for user to either edit the files or confirm to proceed to review]
+
+## Step 6: Review Phase
+
+@oracle validate the proposal before finalizing.
+
+**Technical Validation:**
+
+<agent type="oracle">
+  Analyze the proposed change for technical soundness:
+
+  Read:
+  - `docs/changes/$FEATURE/$CHANGE/proposal.md`
+  - `docs/changes/$FEATURE/$CHANGE/delta.md`
+  - `docs/spec/$FEATURE/spec.md` (current spec)
+
+  1. **Consistency Check:**
+     - Does the delta align with the current spec?
+     - Are all affected layers identified?
+     - Are dependencies between changes correct?
+
+  2. **Completeness Check:**
+     - Are migration steps sufficient?
+     - Is rollback plan viable?
+     - Are breaking changes properly documented?
+     - Are all ADDED items fully specified?
+     - Do MODIFIED items clearly show before/after?
+
+  3. **Risk Assessment:**
+     - Identify potential issues with the approach
+     - Flag any concerns about implementation
+     - Check for unintended side effects
+
+  Output:
+  - validation_result: PASS or CONCERNS
+  - issues_list: List of identified issues (if any)
+  - recommendations: Suggested improvements
+</agent>
+
+**Display validation results to user.**
+
+If validation raises CONCERNS:
+- Display issues and recommendations
+- Offer options:
+  1. Return to Edit Phase (Step 5)
+  2. Proceed anyway (user accepts risks)
+  3. Cancel proposal
+
+[Wait for user decision]
+
+**User Approval:**
+
+If validation PASSED or user chose to proceed:
+- Present validation summary
+- Request explicit approval to create implementation tasks
+
+**Approval required to proceed:**
+- [ ] I have reviewed the proposal and delta
+- [ ] I understand the scope and impact
+- [ ] I approve creating Beads tasks for implementation
+
+[Wait for user approval]
+
+## Step 7: Finalize Change Proposal
+
+@architect finalize artifacts and create Beads epic after user approval.
+
+Update proposal status:
+- Edit `docs/changes/$FEATURE/$CHANGE/proposal.md`
+- Change **Status:** from "Draft" to "Approved"
+
+Create Beads epic for change:
+- Analyze delta to identify affected layers
+- Create epic: `bd create "Change: $FEATURE - $CHANGE" -t epic -p 1 -l $FEATURE,change`
+- Create tasks for **only the affected layers** (Entity, Repository, Service, Router, etc.)
+- Set dependencies based on change scope (bottom-up)
+- Examples:
+  - Service + router: service blocks router
+  - Full-stack: entity → repository → service → router with blocking dependencies
+
+Store epic_id, task_count, layers_affected for output.
 
 ## Change Proposal Complete
 
-Created:
-- `docs/changes/$FEATURE/$CHANGE/proposal.md`
+Created and approved:
+- `docs/changes/$FEATURE/$CHANGE/proposal.md` (Status: Approved)
 - `docs/changes/$FEATURE/$CHANGE/delta.md`
 
-Beads Epic: [epic-id]
+Beads Epic: {{epic_id}}
 
 The change proposal includes:
 - Impact analysis and motivation
@@ -126,6 +208,5 @@ The change proposal includes:
 
 **Next steps:**
 
-1. Review the proposal and delta
-2. Begin implementation: `/spec:work $FEATURE`
-3. When complete: `/spec:complete $FEATURE $CHANGE`
+1. Begin implementation: `/spec:work $FEATURE`
+2. When complete: `/spec:complete $FEATURE $CHANGE`

@@ -84,50 +84,49 @@ What technical constraints should we know about?
 
 [Wait for response → store as CONSTRAINTS]
 
-## Step 5: Create Product Document
+## Step 5-6: Create Project Documents (Parallel)
 
-@clerk apply product.md template with interview responses.
+<parallel>
+  <agent type="clerk">
+    Create product document:
+    - Read template: `${CLAUDE_PLUGIN_ROOT}/assets/templates/product.md`
+    - Replace placeholders:
+      - `{{PRODUCT_NAME}}` → actual product name
+      - `{{VISION}}` → vision statement
+      - `{{TARGET_USERS}}` → target users
+      - `{{CORE_FEATURES}}` → core features list
+      - `{{CONSTRAINTS}}` → technical constraints
+      - `{{DATE}}` → current date (YYYY-MM-DD format)
+    - Write to `docs/product/product.md` (skip if exists):
+      ```bash
+      test ! -f docs/product/product.md && cat > docs/product/product.md <<'EOF'
+      [filled template content]
+      EOF
+      ```
 
-Read template:
-```bash
-cat ${CLAUDE_PLUGIN_ROOT}/assets/templates/product.md
-```
+    Return: product_doc_created
+  </agent>
 
-Replace placeholders:
-- `{{PRODUCT_NAME}}` → actual product name
-- `{{VISION}}` → vision statement
-- `{{TARGET_USERS}}` → target users
-- `{{CORE_FEATURES}}` → core features list
-- `{{CONSTRAINTS}}` → technical constraints
-- `{{DATE}}` → current date (YYYY-MM-DD format)
+  <agent type="clerk">
+    Create standards documents:
+    - Copy coding.md template (skip if exists):
+      ```bash
+      test ! -f docs/standards/coding.md && \
+        cp ${CLAUDE_PLUGIN_ROOT}/assets/templates/coding.md docs/standards/coding.md
+      ```
+    - Copy architecture.md template (skip if exists):
+      ```bash
+      test ! -f docs/standards/architecture.md && \
+        cp ${CLAUDE_PLUGIN_ROOT}/assets/templates/architecture.md docs/standards/architecture.md
+      ```
+    - Verify creation:
+      ```bash
+      ls -la docs/standards/
+      ```
 
-Write to `docs/product/product.md` (skip if exists):
-```bash
-test ! -f docs/product/product.md && cat > docs/product/product.md <<'EOF'
-[filled template content]
-EOF
-```
-
-## Step 6: Configure Standards
-
-@clerk apply standards templates.
-
-### Create coding.md (skip if exists)
-```bash
-test ! -f docs/standards/coding.md && \
-  cp ${CLAUDE_PLUGIN_ROOT}/assets/templates/coding.md docs/standards/coding.md
-```
-
-### Create architecture.md (skip if exists)
-```bash
-test ! -f docs/standards/architecture.md && \
-  cp ${CLAUDE_PLUGIN_ROOT}/assets/templates/architecture.md docs/standards/architecture.md
-```
-
-Verify creation:
-```bash
-ls -la docs/standards/
-```
+    Return: standards_created
+  </agent>
+</parallel>
 
 ## Step 7: Initialize Beads (Optional)
 

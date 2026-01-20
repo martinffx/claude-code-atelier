@@ -87,39 +87,60 @@ Your rules:
 
 Show discovered code structure to user.
 
-**Documentation Questions:**
-- What is this feature supposed to do? (user story)
-- What are the success criteria? (acceptance criteria)
-- What business rules are enforced? (validation, constraints)
-- What's missing from the current implementation?
-- What should change?
+**Current State Assessment:**
 
-[Wait for responses]
+Reviewing the discovered code, let's assess its current state:
 
-## Step 5: Load Project Context
+**What works correctly?** (preserve these)
+[Wait for response]
 
-@context retrieve relevant project information.
+**What's broken or buggy?** (fix these - behavior doesn't match expectations)
+[Wait for response]
 
-Read files:
-- `docs/product/product.md` → vision
-- `docs/spec/*/spec.md` → existing features
-- `docs/standards/` → architectural patterns
+**What's missing entirely?** (add these - features not yet implemented)
+[Wait for response]
 
-Extract context on:
-- Product vision alignment
-- Existing related features
-- Architecture patterns to follow
-- Technology stack conventions
+**What should change?** (improve these - works but needs enhancement)
+[Wait for response]
 
-## Step 6: Generate Technical Design
+**Requirements Documentation:**
+
+Now let's document the target state:
+
+**User Story:** What should this feature do when complete?
+[Wait for response]
+
+**Acceptance Criteria:** What are the success conditions? (3-5 testable criteria)
+[Wait for response]
+
+**Business Rules:** What constraints and validation rules apply?
+[Wait for response]
+
+## Step 5-6: Load Context and Generate Design (Parallel)
+
+<parallel>
+  <agent type="clerk">
+    Load product context:
+    - Read `docs/product/product.md` for vision and goals
+    - Read existing `docs/spec/*/spec.md` for patterns and conventions
+    - Extract: product vision alignment, existing related features
+
+    Return: product_context, existing_patterns
+  </agent>
+
+  <agent type="clerk">
+    Load technical standards:
+    - Read `docs/standards/tech.md` for architecture patterns
+    - Read `docs/standards/coding.md` for implementation conventions
+    - Extract: layered architecture patterns, technology stack conventions
+
+    Return: architecture_patterns, coding_standards
+  </agent>
+</parallel>
 
 @architect create technical design following project standards.
 
-Read standards:
-- `docs/standards/tech.md` → layered patterns
-- `docs/standards/coding.md` → implementation guidelines
-
-Apply architectural patterns based on requirements:
+Apply architectural patterns based on requirements and loaded context:
 
 **Determine needed components:**
 - Entities (domain models)
@@ -138,60 +159,33 @@ Apply architectural patterns based on requirements:
 
 **Design only what's needed** - contextual layer detection.
 
-## Step 7: Create Specification Document
+## Step 7-8: Generate Outputs (Parallel)
 
-@scaffold generate unified spec.md with requirements and design.
+<parallel>
+  <agent type="scaffold">
+    Generate specification document:
+    - Apply template from `${CLAUDE_PLUGIN_ROOT}/assets/templates/spec.md`
+    - Include requirements from interview (user story, acceptance criteria, business rules, scope)
+    - Include technical design from architect (architecture pattern, domain model, services, APIs, data persistence)
+    - Create empty Implementation Notes section
+    - Write to `docs/spec/$ARGUMENTS/spec.md`
 
-Create `docs/spec/$ARGUMENTS/spec.md` containing:
+    Return: spec_path
+  </agent>
 
-1. **Requirements Section:**
-   - User story (structured format)
-   - Acceptance criteria (testable)
-   - Business rules
-   - Scope (included/excluded)
+  <agent type="architect">
+    Create Beads epic with dependency-aware tasks:
+    - Analyze technical design to identify needed layers
+    - Create epic: `bd create "Feature: $ARGUMENTS" -t epic -p 1 -l feature,$ARGUMENTS`
+    - Create tasks for **only the layers that exist** (Entity, Repository, Service, Router, etc.)
+    - Set dependencies: Entity → Repository → Service → Router (bottom-up)
+    - Examples:
+      - Full-stack: entity + repo + service + router with blocking dependencies
+      - Simple change: only service + router with service blocking router
 
-2. **Technical Design Section:**
-   - Architecture pattern selected
-   - Domain model (entities with methods)
-   - Services (business operations)
-   - Data persistence (if needed)
-   - API endpoints (if needed)
-   - Events (if applicable)
-
-3. **Implementation Notes Section:**
-   - Empty, filled during implementation
-
-Apply template from `${CLAUDE_PLUGIN_ROOT}/assets/templates/spec.md`
-
-## Step 8: Create Beads Epic with Contextual Tasks
-
-@architect analyze design and create dependency-aware tasks.
-
-Based on components in Technical Design section, create tasks for **only the layers that exist**:
-
-Example full-stack:
-```bash
-bd create "Feature: $ARGUMENTS" -t epic -p 1 -l feature,$ARGUMENTS
-bd create "$ARGUMENTS entity + validation" -p 1 -l $ARGUMENTS
-bd create "$ARGUMENTS repository" -p 1 -l $ARGUMENTS
-bd create "$ARGUMENTS service" -p 1 -l $ARGUMENTS
-bd create "$ARGUMENTS router" -p 1 -l $ARGUMENTS
-bd dep add <repo-id> <entity-id> --type blocks
-bd dep add <service-id> <repo-id> --type blocks
-bd dep add <router-id> <service-id> --type blocks
-```
-
-Example simple change (only service + router):
-```bash
-bd create "Feature: $ARGUMENTS" -t epic -p 1 -l feature,$ARGUMENTS
-bd create "$ARGUMENTS service methods" -p 1 -l $ARGUMENTS
-bd create "$ARGUMENTS router endpoints" -p 1 -l $ARGUMENTS
-bd dep add <router-id> <service-id> --type blocks
-```
-
-**Dependency order:** Entity → Repository → Service → Router (bottom-up)
-
-Store epic ID for output.
+    Return: epic_id, task_count, layers_affected
+  </agent>
+</parallel>
 
 ## Specification Complete
 

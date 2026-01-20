@@ -2,7 +2,7 @@
 
 **Feature:** {{FEATURE_NAME}}
 **Date:** {{DATE}}
-**Status:** Proposed
+**Status:** {{STATUS}}
 
 ---
 

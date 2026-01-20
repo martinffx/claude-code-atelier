@@ -31,70 +31,56 @@ Search for code in these patterns:
 
 If no code found → WARN: "No code found for $ARGUMENTS. Spec unchanged."
 
-## Step 3: Analyze Current Code
+## Step 3-4: Analyze Code and Spec (Parallel)
 
-@architect examine code structure and extract components.
+<parallel>
+  <agent type="architect">
+    Analyze existing code:
+    - Scan discovered source files for all components
+    - **Entities:** class/interface definitions, methods (fromRequest, toRecord, toResponse, validate), properties and types
+    - **Services:** class definitions, public methods, dependencies
+    - **Repositories:** CRUD operations, query methods, database interactions
+    - **Routes/Controllers:** endpoints (method, path), request/response types, handler logic
+    - **Events:** published events, subscribed events, event handlers
+    - **Clients:** external API calls, integration points
+    - Extract signatures, types, and patterns
+    - Document actual implementation structure
 
-For each discovered file:
+    Return: code_structure
+  </agent>
 
-**Entities:**
-- Class/interface definitions
-- Methods (fromRequest, toRecord, toResponse, validate)
-- Properties and types
+  <agent type="architect">
+    Parse current specification:
+    - Read `docs/spec/$ARGUMENTS/spec.md`
+    - Extract expected entities, services, repositories, routes from Technical Design section
+    - Extract API endpoints, data models, business logic specifications
+    - Document intended implementation structure
 
-**Services:**
-- Class definitions
-- Public methods (operation signatures)
-- Dependencies (injected repositories, clients)
+    Return: spec_structure
+  </agent>
+</parallel>
 
-**Repositories:**
-- Class definitions
-- CRUD operations
-- Query methods
-- Database interactions
+## Step 5: Generate Drift Report
 
-**Routes/Controllers:**
-- Endpoints (method, path)
-- Request/response types
-- Handler logic
+Compare `code_structure` with `spec_structure`:
 
-**Events:**
-- Published events
-- Subscribed events
-- Event handlers
-
-**Clients:**
-- External API calls
-- Integration points
-
-Extract signatures, types, and patterns.
-
-## Step 4: Compare Code to Spec
-
-@architect compare discovered code against current spec.
-
-Read `docs/spec/$ARGUMENTS/spec.md`
-
-Identify differences:
-
-**In code but NOT in spec:**
+**In code but NOT in spec (ADDED):**
 - New methods not documented
 - New endpoints not in API section
 - New entities or entity methods
 - New database fields
 - New events
 
-**In spec but NOT in code:**
+**In spec but NOT in code (MISSING):**
 - Planned features not yet implemented
 - Removed functionality
-- Changed signatures
 
-**Different from spec:**
+**Different from spec (MODIFIED):**
 - Method signatures changed
 - Endpoint paths or verbs changed
 - Database schema differences
 
-## Step 5: Update Spec with Code Reality
+## Step 6: Update Spec with Code Reality
 
 @scaffold update spec to match actual code.
 
@@ -140,7 +126,7 @@ Add sync entry:
 
 Write updated spec back.
 
-## Step 6: Create Beads for Incomplete Work
+## Step 7: Create Beads for Incomplete Work
 
 @context identify and track incomplete implementation.
 
