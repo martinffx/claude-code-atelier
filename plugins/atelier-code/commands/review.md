@@ -31,12 +31,12 @@ Load project standards for review criteria:
 If standards files don't exist, use default SDD patterns.
 </context>
 
-## Step 2: Senior Engineer Review
+## Step 2: Principal Engineer Review
 
 <architect>
 @agent-architect
 
-Analyze all changes with senior engineer perspective.
+Analyze all changes with principal engineer perspective.
 
 Focus areas:
 **🔴 CRITICAL:** Security vulnerabilities, data loss risks, breaking changes
