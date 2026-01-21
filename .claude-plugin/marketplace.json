@@ -29,6 +29,12 @@
       "description": "TypeScript ecosystem patterns for DynamoDB, Drizzle, Fastify, and API design",
       "source": "./plugins/atelier-typescript",
       "category": "development"
+    },
+    {
+      "name": "python",
+      "description": "Modern Python ecosystem patterns - architecture, monorepos, tooling, APIs, databases, and testing",
+      "source": "./plugins/atelier-python",
+      "category": "development"
     }
   ]
 }
