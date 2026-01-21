@@ -114,7 +114,13 @@ bd dep list <task-id>
 Show dependency chain and suggest actions.
 
 ### Next Action Logic
-- Feature in progress + ready tasks → `/spec:work <feature>`
+- Feature has Beads tasks + ready tasks → `/spec:work <feature>`
+- Feature has spec but no Beads tasks:
+  - If no design → `/spec:design <feature>`
+  - If design but no plan → `/spec:plan <feature>`
+- Change has proposal but no Beads tasks:
+  - If no design → `/spec:design <feature> <change>`
+  - If design but no plan → `/spec:plan <feature> <change>`
 - Feature complete → `/spec:create <next_feature>` or `/spec:propose <feature> <change>`
 - Tasks blocked → Work on parallel feature or resolve dependencies
 

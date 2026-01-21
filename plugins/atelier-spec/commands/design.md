@@ -1,0 +1,174 @@
+# Generate Technical Design: $ARGUMENTS
+
+Format: `<feature>` or `<feature> <change>`
+
+## Step 1: Validate Prerequisites
+
+@context determine mode and check prerequisites.
+
+Parse arguments:
+- If 1 argument → Mode: INITIAL (design new feature)
+- If 2 arguments → Mode: CHANGE (design change to existing feature)
+
+**Mode: INITIAL**
+Check if spec exists with requirements:
+- If `docs/spec/$FEATURE/spec.md` doesn't exist → ERROR: "Feature not found. Create with: /spec:create $FEATURE"
+- Read spec.md and verify Requirements section exists
+- If Technical Design section already exists → ERROR: "Design already exists. Use /spec:design $FEATURE <change> for changes."
+
+**Mode: CHANGE**
+Check if proposal exists:
+- If `docs/spec/$FEATURE/changes/$CHANGE/proposal.md` doesn't exist → ERROR: "Change proposal not found. Create with: /spec:propose $FEATURE $CHANGE"
+- If `docs/spec/$FEATURE/changes/$CHANGE/design.md` already exists → ERROR: "Change design already exists. Use /spec:plan to continue."
+
+## Step 2: Load Context
+
+@clerk load product and technical context in parallel.
+
+<parallel>
+  <agent type="clerk">
+    Load product context:
+    - Read `docs/product/product.md` for vision and goals
+    - Read existing `docs/spec/*/spec.md` for patterns and conventions
+    - Extract: product vision alignment, existing related features
+
+    Return: product_context, existing_patterns
+  </agent>
+
+  <agent type="clerk">
+    Load technical standards:
+    - Read `docs/standards/tech.md` for architecture patterns
+    - Read `docs/standards/coding.md` for implementation conventions
+    - Extract: layered architecture patterns, technology stack conventions
+
+    Return: architecture_patterns, coding_standards
+  </agent>
+</parallel>
+
+## Step 3: Load Requirements
+
+@context load requirements based on mode.
+
+**Mode: INITIAL**
+Read `docs/spec/$FEATURE/spec.md`:
+- Extract Requirements section (user story, acceptance criteria, business rules, scope)
+- Check for brownfield mode indicator
+
+**Mode: CHANGE**
+Read multiple sources:
+- `docs/spec/$FEATURE/spec.md` → current design (baseline)
+- `docs/spec/$FEATURE/changes/$CHANGE/proposal.md` → change requirements
+- Extract: what needs to change, why, affected components
+
+## Step 4: Generate Technical Design
+
+@architect create technical design following project standards.
+
+**Mode: INITIAL - Design Entire Feature**
+
+Apply architectural patterns based on requirements and loaded context:
+
+**Determine needed components:**
+- Entities (domain models)
+- Services (business logic)
+- Repositories (data persistence) - if database needed
+- Routes (API endpoints) - if external exposure needed
+- Events (async communication) - if event-driven
+- Clients (external integrations) - if calling external APIs
+
+**Select architecture pattern:**
+- Standard CRUD API: Router → Service → Repository → Database
+- External API: Router → Service → Client → External API
+- Event-Driven Consumer: Consumer → Service → Repository → Database
+- Event-Driven Producer: Router → Service → Producer → Event Broker
+- Hybrid: Combination of above
+
+**Design components:**
+- Domain model with entities and methods (fromRequest, toRecord, toResponse, validate)
+- Service interfaces with business operations
+- Repository interfaces with data operations
+- API endpoints (REST, GraphQL, etc.)
+- Database schema (tables, indexes, constraints)
+- Events (if applicable)
+
+**Mode: CHANGE - Design Modifications**
+
+Analyze current design from spec.md and determine:
+
+**What needs modification:**
+- New fields/methods to add to existing entities
+- New operations to add to existing services
+- New endpoints to add to existing routes
+- Schema changes (new tables, columns, indexes)
+- New events or event payload changes
+
+**Impact analysis:**
+- Which layers are affected (Entity, Service, Repository, Router)
+- Breaking changes (API contracts, database schema, event payloads)
+- Migration requirements
+
+**Design the delta:**
+- Show modified entity signatures
+- Show new/modified service methods
+- Show new/modified API endpoints
+- Show database migrations (ALTER TABLE, etc.)
+
+## Step 5: Write Design Output
+
+@scaffold write design to appropriate location.
+
+**Mode: INITIAL**
+
+Update `docs/spec/$FEATURE/spec.md`:
+- Append Technical Design section with:
+  - Architecture Pattern
+  - Domain Model (entities with methods)
+  - Services (interfaces and operations)
+  - Data Persistence (repository interfaces, database schema)
+  - API Endpoints (table format)
+  - Events (if applicable)
+- Keep Implementation Notes section empty
+
+**Mode: CHANGE**
+
+Create `docs/spec/$FEATURE/changes/$CHANGE/design.md`:
+- Write standalone design document for the change:
+  - Current State (baseline from spec.md)
+  - Proposed Changes (modifications to each layer)
+  - Migration Strategy (data, schema, code changes)
+  - Breaking Changes (if any)
+
+Update `docs/spec/$FEATURE/changes/$CHANGE/proposal.md`:
+- Append Technical Design section referencing design.md
+- Include summary of affected components
+
+**Do NOT modify main spec.md in CHANGE mode** - changes are merged later via /spec:complete.
+
+## Design Complete
+
+**Mode: INITIAL**
+```
+Updated: docs/spec/$FEATURE/spec.md
+
+The specification now includes:
+- Requirements (user story, acceptance criteria, business rules)
+- Technical Design (architecture, domain model, services, APIs, data persistence)
+- {{component_count}} components identified
+- {{layer_count}} layers needed
+
+Next step: /spec:plan $FEATURE
+```
+
+**Mode: CHANGE**
+```
+Created: docs/spec/$FEATURE/changes/$CHANGE/design.md
+Updated: docs/spec/$FEATURE/changes/$CHANGE/proposal.md
+
+The change design includes:
+- Current state baseline
+- Proposed modifications to {{affected_layer_count}} layers
+- Migration strategy
+- {{#if has_breaking_changes}}⚠️ Breaking changes identified{{/if}}
+
+Next step: /spec:plan $FEATURE $CHANGE
+```

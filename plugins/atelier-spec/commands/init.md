@@ -46,7 +46,7 @@ Store detected name as `PRODUCT_NAME`.
 @context create base SDD directories.
 
 ```bash
-mkdir -p docs/spec docs/product docs/standards docs/changes
+mkdir -p docs/spec docs/product docs/standards
 ```
 
 Verify creation:
@@ -156,12 +156,17 @@ If Beads not found:
 ```
 docs/
 ├── spec/             # Feature specifications (one directory per feature)
+│   └── <feature>/
+│       ├── spec.md   # Unified requirements + technical design
+│       └── changes/  # Change proposals (created during /spec:propose)
+│           └── <change>/
+│               ├── proposal.md
+│               └── delta.md
 ├── product/          # Product-level docs (product.md, roadmap.md)
 │   └── product.md    # ✓ Created with {{PRODUCT_NAME}} context
-├── standards/        # Technical standards
-│   ├── coding.md     # ✓ Created with TDD patterns and conventions
-│   └── architecture.md # ✓ Created with layered architecture patterns
-└── changes/          # Change proposals (created during /spec:propose)
+└── standards/        # Technical standards
+    ├── coding.md     # ✓ Created with TDD patterns and conventions
+    └── architecture.md # ✓ Created with layered architecture patterns
 ```
 
 ### Next Steps:

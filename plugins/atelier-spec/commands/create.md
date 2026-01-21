@@ -116,90 +116,45 @@ Now let's document the target state:
 **Business Rules:** What constraints and validation rules apply?
 [Wait for response]
 
-## Step 5-6: Load Context and Generate Design (Parallel)
+## Step 5: Write Requirements to Spec
 
-<parallel>
-  <agent type="clerk">
-    Load product context:
-    - Read `docs/product/product.md` for vision and goals
-    - Read existing `docs/spec/*/spec.md` for patterns and conventions
-    - Extract: product vision alignment, existing related features
+@scaffold generate requirements document.
 
-    Return: product_context, existing_patterns
-  </agent>
+Create directory structure:
+```bash
+mkdir -p docs/spec/$ARGUMENTS
+```
 
-  <agent type="clerk">
-    Load technical standards:
-    - Read `docs/standards/tech.md` for architecture patterns
-    - Read `docs/standards/coding.md` for implementation conventions
-    - Extract: layered architecture patterns, technology stack conventions
+Write requirements to spec.md:
+- Create `docs/spec/$ARGUMENTS/spec.md`
+- Include only the Requirements section:
+  - User Story
+  - Acceptance Criteria
+  - Business Rules
+  - Scope (Included/Excluded)
+- Leave Technical Design section empty (to be filled by /spec:design)
+- Leave Implementation Notes section empty
 
-    Return: architecture_patterns, coding_standards
-  </agent>
-</parallel>
+**For GREENFIELD mode:**
+- Write requirements from interview responses
+- Add note: "Mode: Greenfield (new implementation)"
 
-@architect create technical design following project standards.
+**For BROWNFIELD mode:**
+- Write target state requirements (what should exist when complete)
+- Document current state in Requirements section as context
+- Add note: "Mode: Brownfield (existing code detected)"
+- List discovered code files for reference
 
-Apply architectural patterns based on requirements and loaded context:
+## Requirements Complete
 
-**Determine needed components:**
-- Entities (domain models)
-- Services (business logic)
-- Repositories (data persistence) - if database needed
-- Routes (API endpoints) - if external exposure needed
-- Events (async communication) - if event-driven
-- Clients (external integrations) - if calling external APIs
-
-**Select architecture pattern:**
-- Standard CRUD API: Router → Service → Repository → Database
-- External API: Router → Service → Client → External API
-- Event-Driven Consumer: Consumer → Service → Repository → Database
-- Event-Driven Producer: Router → Service → Producer → Event Broker
-- Hybrid: Combination of above
-
-**Design only what's needed** - contextual layer detection.
-
-## Step 7-8: Generate Outputs (Parallel)
-
-<parallel>
-  <agent type="scaffold">
-    Generate specification document:
-    - Apply template from `${CLAUDE_PLUGIN_ROOT}/assets/templates/spec.md`
-    - Include requirements from interview (user story, acceptance criteria, business rules, scope)
-    - Include technical design from architect (architecture pattern, domain model, services, APIs, data persistence)
-    - Create empty Implementation Notes section
-    - Write to `docs/spec/$ARGUMENTS/spec.md`
-
-    Return: spec_path
-  </agent>
-
-  <agent type="architect">
-    Create Beads epic with dependency-aware tasks:
-    - Analyze technical design to identify needed layers
-    - Create epic: `bd create "Feature: $ARGUMENTS" -t epic -p 1 -l feature,$ARGUMENTS`
-    - Create tasks for **only the layers that exist** (Entity, Repository, Service, Router, etc.)
-    - Set dependencies: Entity → Repository → Service → Router (bottom-up)
-    - Examples:
-      - Full-stack: entity + repo + service + router with blocking dependencies
-      - Simple change: only service + router with service blocking router
-
-    Return: epic_id, task_count, layers_affected
-  </agent>
-</parallel>
-
-## Specification Complete
-
-Created: `docs/spec/$ARGUMENTS/spec.md`
-Beads Epic: [epic-id]
+Created: `docs/spec/$ARGUMENTS/spec.md` (requirements only)
 
 The specification includes:
-- Unified requirements and technical design
-- {{mode}} development mode (code {{#if code_found}}detected and documented{{else}}designed from scratch{{/if}})
-- Contextual task breakdown ({{task_count}} tasks for {{layers_affected}} layers)
-- Dependency-ordered implementation plan
+- {{mode}} development mode ({{#if code_found}}existing code documented{{else}}new feature{{/if}})
+- User story and acceptance criteria
+- Business rules and scope boundaries
+- {{#if code_found}}Current state assessment{{/if}}
 
-**Next steps:**
+**Next step:**
 
-1. Review the generated specification
-2. Begin implementation: `/spec:work $ARGUMENTS`
-3. Check progress: `/spec:status $ARGUMENTS`
+Generate technical design: `/spec:design $ARGUMENTS`

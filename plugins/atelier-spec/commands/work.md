@@ -37,20 +37,26 @@ bd update <task-id> --status in_progress
 
 @coder load all necessary context for implementation.
 
+Identify task type from labels:
+- Feature task (initial): Changes are in `changes/initial/`
+- Change task: Changes are in `changes/<change>/`
+
 Read specifications:
 
-**If feature-only task:**
-- `docs/spec/<feature>/spec.md` → requirements and design
+**If initial feature task:**
+- `docs/spec/<feature>/spec.md` → complete requirements and design
+- `docs/spec/<feature>/changes/initial/delta.md` → what to implement (all ADDED)
 
 **If change task:**
-- `docs/spec/<feature>/spec.md` → current state
-- `docs/changes/<feature>/<change>/delta.md` → changes to implement
+- `docs/spec/<feature>/spec.md` → current baseline
+- `docs/spec/<feature>/changes/<change>/design.md` → change design
+- `docs/spec/<feature>/changes/<change>/delta.md` → ADDED/MODIFIED/REMOVED
 
 Read standards:
 - `docs/standards/coding.md` → implementation patterns and testing
 - `docs/standards/tech.md` → layered architecture patterns
 
-Extract from spec/delta:
+Extract from spec/design/delta:
 - Entity definitions and methods
 - Service operations
 - Repository methods
@@ -215,4 +221,6 @@ Next ready task: [task-id and description] or "None - feature complete"
 
 1. Continue next task: `/spec:work [feature]`
 2. Check feature progress: `/spec:status [feature]`
-3. Complete change: `/spec:complete <feature> <change>` (if working on a change)
+3. When all tasks done:
+   - Initial feature: `/spec:complete <feature> initial`
+   - Change: `/spec:complete <feature> <change>`
