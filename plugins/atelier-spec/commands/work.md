@@ -4,7 +4,7 @@ Optional format: `<feature>` or empty (any ready task)
 
 ## Step 1: Check Beads and Find Ready Task
 
-@context check Beads installation and find next ready task.
+@clerk check Beads installation and find next ready task.
 
 Check Beads:
 ```bash
@@ -35,7 +35,7 @@ bd update <task-id> --status in_progress
 
 ## Step 2: Load Implementation Context
 
-@coder load all necessary context for implementation.
+Load all necessary context for implementation.
 
 Identify task type from labels:
 - Feature task (initial): Changes are in `changes/initial/`
@@ -66,7 +66,7 @@ Extract from spec/design/delta:
 
 ## Step 3: Implement Using Stub→Test→Fix Pattern
 
-@coder implement task following layer boundary testing approach.
+Implement task following layer boundary testing approach.
 
 ### Layer Boundary Testing Pattern
 
@@ -191,7 +191,7 @@ Examples of discovered work:
 
 ## Step 5: Mark Task Complete
 
-@coder verify all quality checks pass and close task.
+Verify all quality checks pass and close task.
 
 Run tests:
 ```bash

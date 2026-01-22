@@ -2,14 +2,14 @@
 
 ## Step 1: Validate Prerequisites
 
-@context verify spec exists.
+@clerk verify spec exists.
 
 Check if spec exists:
 - If `docs/spec/$ARGUMENTS/spec.md` does NOT exist → ERROR: "No spec found. Use /spec:create to create a spec first."
 
 ## Step 2: Find Code Location
 
-@context locate code for feature.
+@clerk locate code for feature.
 
 **Strategy 1: From spec references**
 - Read `docs/spec/$ARGUMENTS/spec.md`
@@ -82,7 +82,7 @@ Compare `code_structure` with `spec_structure`:
 
 ## Step 6: Update Spec with Code Reality
 
-@scaffold update spec to match actual code.
+@clerk update spec to match actual code.
 
 Update `docs/spec/$ARGUMENTS/spec.md`:
 
@@ -128,7 +128,7 @@ Write updated spec back.
 
 ## Step 7: Create Beads for Incomplete Work
 
-@context identify and track incomplete implementation.
+@clerk identify and track incomplete implementation.
 
 Scan code for markers of incomplete work:
 

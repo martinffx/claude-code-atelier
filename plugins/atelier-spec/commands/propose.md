@@ -4,14 +4,14 @@ Format: `<feature_name> <change_name>`
 
 ## Step 1: Validate Prerequisites
 
-@context check for existing spec.
+@clerk check for existing spec.
 
 Check if spec exists:
 - If `docs/spec/$FEATURE/spec.md` doesn't exist → ERROR: "Feature spec not found. Create with: /spec:create $FEATURE"
 
 ## Step 2: Load Current State
 
-@context retrieve current feature specification.
+@clerk retrieve current feature specification.
 
 Read files:
 - `docs/spec/$FEATURE/spec.md` → current requirements and design
@@ -24,7 +24,7 @@ Extract current state:
 
 ## Step 3: Gather Change Requirements
 
-@analyst conduct lightweight interview for change.
+@oracle conduct lightweight interview for change.
 
 Show current feature implementation context.
 
@@ -47,7 +47,7 @@ Show current feature implementation context.
 
 ## Step 4: Write Structured Requirements
 
-@scaffold generate requirements.json and proposal.md.
+@clerk generate requirements.json and proposal.md.
 
 Create directory:
 ```bash

@@ -4,7 +4,7 @@ Format: `<feature_name> <change_name>`
 
 ## Step 1: Validate Prerequisites
 
-@context check for change proposal and Beads epic.
+@clerk check for change proposal and Beads epic.
 
 Check if change exists:
 - If `docs/spec/$FEATURE/changes/$CHANGE/` doesn't exist → ERROR: "Change proposal not found. Create with: /spec:propose $FEATURE $CHANGE"
@@ -17,7 +17,7 @@ bd list --label $FEATURE,$CHANGE --json
 
 ## Step 2: Load Change Artifacts
 
-@context read design, delta, and current spec.
+@clerk read design, delta, and current spec.
 
 Read files:
 - `docs/spec/$FEATURE/changes/$CHANGE/design.md` → technical design changes

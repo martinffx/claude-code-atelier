@@ -12,40 +12,32 @@ Spec-Driven Development combining [OpenSpec](https://openspec.dev/) living speci
 
 ## Workflow
 
-### Greenfield: /spec:create
+### Greenfield
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│ /spec:create <feature>                                              │
-│   ├── @clerk    → Check structure, detect existing code             │
-│   ├── @oracle   → Gather requirements (user story, acceptance)      │
-│   ├── @architect → Technical design (only needed layers)            │
-│   ├── @clerk    → Write docs/spec/<feature>/spec.md                 │
-│   └── beads     → Create epic + dependency-ordered tasks            │
-└─────────────────────────────────────────────────────────────────────┘
+/spec:init → /spec:create → /spec:design → /spec:plan → /spec:work → /spec:complete
 ```
 
-### Brownfield: /spec:propose → /spec:work → /spec:complete
+**Flow:**
+1. `/spec:init` - Initialize project structure
+2. `/spec:create <feature>` - Gather requirements (user story, acceptance criteria)
+3. `/spec:design <feature>` - Generate technical design (architecture, domain model, APIs)
+4. `/spec:plan <feature>` - Create implementation plan + Beads epic with tasks
+5. `/spec:work [feature]` - Implement next ready task (Stub → Test → Fix)
+6. `/spec:complete <feature> initial` - Mark feature complete
+
+### Brownfield
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│ /spec:propose <feature> <change>                                    │
-│   ├── @clerk    → Load current spec                                 │
-│   ├── @oracle   → Lightweight change interview                      │
-│   ├── @architect → Generate ADDED/MODIFIED/REMOVED delta            │
-│   └── beads     → Create change epic + tasks                        │
-├─────────────────────────────────────────────────────────────────────┤
-│ /spec:work [feature]                                                │
-│   ├── beads     → `bd ready` finds next unblocked task              │
-│   ├── [impl]    → Stub → Test → Implement at layer boundary         │
-│   └── beads     → `bd close` marks complete                         │
-├─────────────────────────────────────────────────────────────────────┤
-│ /spec:complete <feature> <change>                                   │
-│   ├── @clerk    → Load delta.md                                     │
-│   ├── @architect → Merge delta into spec.md                         │
-│   └── beads     → Close epic                                        │
-└─────────────────────────────────────────────────────────────────────┘
+/spec:propose → /spec:design → /spec:plan → /spec:work → /spec:complete
 ```
+
+**Flow:**
+1. `/spec:propose <feature> <change>` - Propose changes (motivation, affected components)
+2. `/spec:design <feature> <change>` - Generate technical design for changes
+3. `/spec:plan <feature> <change>` - Create implementation plan + Beads epic
+4. `/spec:work [feature]` - Implement next ready task
+5. `/spec:complete <feature> <change>` - Merge delta into main spec
 
 ## Agents
 
@@ -118,12 +110,14 @@ Test at layer boundaries: Core (unit tests with stubs) vs Edge (integration test
 | Command | Description |
 |---------|-------------|
 | /spec:init | Initialize repository for Spec-Driven Development |
-| /spec:create | Create new feature specification |
+| /spec:create | Gather requirements for new feature |
+| /spec:design | Generate technical design |
+| /spec:plan | Create implementation plan + Beads epic |
 | /spec:propose | Propose changes to existing feature |
-| /spec:sync | Update spec from code changes |
 | /spec:work | Implement next ready task |
-| /spec:complete | Complete changes and merge delta |
-| /spec:status | Track feature progress via Beads |
+| /spec:complete | Merge changes into main spec |
+| /spec:status | Track progress via Beads |
+| /spec:sync | Update spec from code changes |
 
 ## Skills
 
@@ -141,20 +135,22 @@ Test at layer boundaries: Core (unit tests with stubs) vs Edge (integration test
 # Initialize project for SDD (one-time setup)
 /spec:init
 
-# Greenfield: Create feature specification
-/spec:create <feature>
+# Greenfield: New feature workflow
+/spec:create <feature>           # Gather requirements
+/spec:design <feature>            # Generate technical design
+/spec:plan <feature>              # Create implementation plan
+/spec:work [feature]              # Implement tasks
+/spec:complete <feature> initial  # Mark complete
 
-# Brownfield: Propose changes to existing feature
-/spec:propose <feature> <change>
-
-# Implement tasks (bd ready surfaces next unblocked task)
-/spec:work [feature]
-
-# Complete changes and merge delta into spec
-/spec:complete <feature> <change>
+# Brownfield: Change existing feature workflow
+/spec:propose <feature> <change>    # Propose changes
+/spec:design <feature> <change>     # Design changes
+/spec:plan <feature> <change>       # Plan implementation
+/spec:work [feature]                # Implement tasks
+/spec:complete <feature> <change>   # Merge delta
 
 # Track progress and identify blockers
-/spec:status
+/spec:status [feature]
 
 # Update spec from code changes
 /spec:sync <feature>

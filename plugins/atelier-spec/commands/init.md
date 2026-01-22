@@ -4,7 +4,7 @@ Initialize this repository for Spec-Driven Development (SDD) workflows.
 
 ## Step 1: Check Current State
 
-@context verify project initialization status.
+@clerk verify project initialization status.
 
 Check if already initialized:
 ```bash
@@ -18,7 +18,7 @@ If `docs/product/product.md` exists:
 
 ## Step 2: Infer Product Name
 
-@context detect product name from directory contents.
+@clerk detect product name from directory contents.
 
 Try in order (use first match):
 
@@ -43,7 +43,7 @@ Store detected name as `PRODUCT_NAME`.
 
 ## Step 3: Create Directory Structure
 
-@context create base SDD directories.
+@clerk create base SDD directories.
 
 ```bash
 mkdir -p docs/spec docs/product docs/standards
@@ -130,7 +130,7 @@ What technical constraints should we know about?
 
 ## Step 7: Initialize Beads (Optional)
 
-@context check and initialize task tracker.
+@clerk check and initialize task tracker.
 
 Check if Beads is installed:
 ```bash

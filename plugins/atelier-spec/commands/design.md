@@ -4,7 +4,7 @@ Format: `<feature>` or `<feature> <change>`
 
 ## Step 1: Validate Prerequisites
 
-@context determine mode and check prerequisites.
+@clerk determine mode and check prerequisites.
 
 Parse arguments:
 - If 1 argument → Mode: INITIAL (design new feature)
@@ -47,7 +47,7 @@ Check if proposal exists:
 
 ## Step 3: Load Requirements
 
-@context load requirements based on mode.
+@clerk load requirements based on mode.
 
 **Mode: INITIAL**
 Read `docs/spec/$FEATURE/spec.md`:
@@ -115,7 +115,7 @@ Analyze current design from spec.md and determine:
 
 ## Step 5: Write Design Output
 
-@scaffold write design to appropriate location.
+@clerk write design to appropriate location.
 
 **Mode: INITIAL**
 

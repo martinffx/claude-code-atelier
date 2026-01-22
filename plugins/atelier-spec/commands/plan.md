@@ -4,7 +4,7 @@ Format: `<feature>` or `<feature> <change>`
 
 ## Step 1: Validate Prerequisites
 
-@context determine mode and check prerequisites.
+@clerk determine mode and check prerequisites.
 
 Parse arguments:
 - If 1 argument → Mode: INITIAL (plan new feature)

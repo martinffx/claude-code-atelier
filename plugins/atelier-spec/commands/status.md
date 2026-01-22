@@ -2,7 +2,7 @@
 
 ## Step 1: Check Beads Installation
 
-@context verify Beads is available.
+@clerk verify Beads is available.
 
 ```bash
 bd --version
@@ -11,7 +11,7 @@ bd --version
 
 ## Step 2: Query Feature Tasks
 
-@product analyze progress using Beads.
+@oracle analyze progress using Beads.
 
 **If feature specified:**
 ```bash
@@ -27,7 +27,7 @@ Parse JSON output to get task data.
 
 ## Step 3: Calculate Metrics
 
-@product compute progress metrics.
+@oracle compute progress metrics.
 
 ### Task Breakdown
 - Total tasks
@@ -104,7 +104,7 @@ Next Actions:
 
 ## Step 5: Identify Blockers and Recommendations
 
-@product provide strategic recommendations.
+@oracle provide strategic recommendations.
 
 ### Blocker Analysis
 For each blocked task:

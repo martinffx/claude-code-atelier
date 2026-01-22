@@ -14,13 +14,23 @@ A software development atelier for Claude Code - spec-driven development, code q
 - **Prevention over debugging** - Spot issues in design, not production
 - **Enforced patterns** - Layered architecture with domain-driven design and layer boundary testing
 
-**What you get:** 6 commands + 2 auto-invoked skills + 3 specialized agents (architect, oracle, clerk)
+**What you get:** 9 commands + 5 skills + 3 specialized agents (architect, oracle, clerk)
 
 ```bash
-/spec:create <feature>   # Greenfield: Create new feature spec with Beads epic
-/spec:propose <change>   # Brownfield: Propose changes to existing features
-/spec:work <feature>     # AI-driven implementation with stub→test→fix workflow
-/spec:status             # Track progress across all features
+# Greenfield workflow
+/spec:create <feature>   # Gather requirements
+/spec:design <feature>   # Generate technical design
+/spec:plan <feature>     # Create implementation plan with Beads epic
+/spec:work [feature]     # AI-driven implementation with stub→test→fix workflow
+
+# Brownfield workflow
+/spec:propose <feature> <change>  # Propose changes to existing feature
+/spec:design <feature> <change>   # Design changes
+/spec:plan <feature> <change>     # Plan implementation
+/spec:work [feature]              # Implement changes
+
+# Progress tracking
+/spec:status [feature]   # Track progress via Beads
 ```
 
 [→ Full spec plugin documentation](plugins/atelier-spec/README.md)
@@ -81,6 +91,26 @@ No commands needed - patterns are auto-invoked when working with these technolog
 
 [→ Full typescript plugin documentation](plugins/atelier-typescript/README.md)
 
+---
+
+### [python](plugins/atelier-python/README.md) - Python Patterns
+
+**Modern Python ecosystem patterns** - architecture, monorepos, tooling, APIs, databases, and testing - **automatically loaded** when relevant.
+
+**Coverage:**
+- **Architecture** - Functional core/imperative shell, DDD patterns, layered architecture
+- **Monorepo** - uv workspaces, mise task orchestration, apps/packages pattern
+- **FastAPI** - REST APIs, Pydantic validation, dependency injection, OpenAPI
+- **Testing** - Stub-Driven TDD, layer boundary testing, pytest patterns
+- **SQLAlchemy** - ORM patterns, queries, async, upserts
+- **Temporal** - Workflow orchestration, activities, error handling
+- **Modern Python** - Type hints, generics, async/await, pattern matching
+- **Build Tools** - uv, mise, ruff, basedpyright, pytest configurations
+
+No commands needed - patterns are auto-invoked when working with these technologies.
+
+[→ Full python plugin documentation](plugins/atelier-python/README.md)
+
 ## Installation
 
 ```bash
@@ -92,6 +122,7 @@ No commands needed - patterns are auto-invoked when working with these technolog
 /plugin install code@atelier
 /plugin install oracle@atelier
 /plugin install typescript@atelier
+/plugin install python@atelier
 ```
 
 ## Development
@@ -107,72 +138,11 @@ claude --plugin-dir ./claude-code-atelier/plugins/atelier-spec
 claude --plugin-dir ./claude-code-atelier/plugins/atelier-code
 claude --plugin-dir ./claude-code-atelier/plugins/atelier-oracle
 claude --plugin-dir ./claude-code-atelier/plugins/atelier-typescript
+claude --plugin-dir ./claude-code-atelier/plugins/atelier-python
 ```
 
 Restart Claude Code after making changes to reload plugins.
 
-## Structure
-
-```
-claude-code-atelier/
-├── .claude-plugin/
-│   └── marketplace.json
-├── plugins/
-│   ├── atelier-spec/
-│   │   ├── .claude-plugin/plugin.json
-│   │   ├── skills/
-│   │   │   ├── spec/
-│   │   │   │   ├── SKILL.md
-│   │   │   │   └── workflows/
-│   │   │   ├── change/
-│   │   │   │   ├── SKILL.md
-│   │   │   │   └── workflows/
-│   │   │   └── product/
-│   │   │       ├── SKILL.md
-│   │   │       └── workflows/
-│   │   └── assets/templates/
-│   ├── atelier-code/
-│   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/
-│   │       ├── atelier-review/SKILL.md
-│   │       ├── atelier-commit/SKILL.md
-│   │       ├── reviewing-code/SKILL.md
-│   │       └── generating-commits/SKILL.md
-│   ├── atelier-oracle/
-│   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/
-│   │       ├── atelier-debug/SKILL.md
-│   │       ├── atelier-challenge/SKILL.md
-│   │       └── atelier-thinkdeep/SKILL.md
-│   └── atelier-typescript/
-│       ├── .claude-plugin/plugin.json
-│       └── skills/
-│           ├── api-design/SKILL.md
-│           ├── dynamodb-toolbox/SKILL.md
-│           ├── drizzle-orm/SKILL.md
-│           └── fastify-typebox/SKILL.md
-├── LICENSE
-└── README.md
-```
-
-## Architecture
-
-The repository follows Daniel Miessler's PAI (Personal AI Infrastructure) pattern:
-
-- **Commands** - User-invocable workflows triggered via `/command:name` syntax
-- **Skills** - Auto-invoked contextual knowledge loaded when relevant
-- **Agents** - Internal agent personas (@agent-name) for specialized thinking
-- **Templates** - Document templates for specs, proposals, and deltas
-
-### Plugin Structure
-
-Each plugin lives in `plugins/atelier-{name}/` with:
-- `.claude-plugin/plugin.json` - Plugin metadata and configuration
-- `commands/*.md` - Command implementations (user-invoked via `/command`)
-- `skills/*/SKILL.md` - Skill definitions (auto-invoked based on description)
-- `agents/*.md` - Agent persona definitions (invoked via @agent-name)
-- `assets/templates/*.md` - Document templates
-
 ## License
 
-MIT
+MIT Copyright (c) 2026 Martin Richards

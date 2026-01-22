@@ -2,7 +2,7 @@
 
 ## Step 1: Check Project Initialization
 
-@context verify project has been initialized for SDD.
+@clerk verify project has been initialized for SDD.
 
 Check if product document exists:
 ```bash
@@ -16,7 +16,7 @@ If `docs/product/product.md` does NOT exist:
 
 ## Step 2: Validate Prerequisites
 
-@context check for existing spec and Beads installation.
+@clerk check for existing spec and Beads installation.
 
 Check if spec already exists:
 - If `docs/spec/$ARGUMENTS/spec.md` exists → ERROR: "Spec already exists. Use /spec:propose for changes."
@@ -29,7 +29,7 @@ bd --version
 
 ## Step 3: Detect Existing Code
 
-@context search for existing code using multiple strategies.
+@clerk search for existing code using multiple strategies.
 
 Search for code in these patterns (stop at first match):
 
@@ -58,7 +58,7 @@ If no code found:
 
 ## Step 4: Gather Requirements
 
-@analyst conduct structured interview based on mode.
+@oracle conduct structured interview based on mode.
 
 ### If GREENFIELD (no existing code):
 
@@ -118,7 +118,7 @@ Now let's document the target state:
 
 ## Step 5: Write Requirements to Spec
 
-@scaffold generate requirements document.
+@clerk generate requirements document.
 
 Create directory structure:
 ```bash
