@@ -2,6 +2,10 @@
 
 ![Atelier - A collaborative workshop for software development](atelier.jpg)
 
+> An atelier is the private workshop or studio where a principal master and a number of assistants, students, and apprentices can work together producing fine art or visual art released under the master's name or supervision. 
+
+[Wikipedia](https://en.wikipedia.org/wiki/Atelier)
+
 A software development atelier for Claude Code - spec-driven development, code quality, deep thinking, and TypeScript patterns.
 
 ## Plugins
