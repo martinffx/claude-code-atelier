@@ -66,111 +66,13 @@ Extract from spec/design/delta:
 
 ## Step 3: Implement Using Stub→Test→Fix Pattern
 
-Implement task following layer boundary testing approach.
+<skill-prompt>
+Load: spec:testing, spec:architect
+</skill-prompt>
 
-### Layer Boundary Testing Pattern
+Implement task following layer boundary testing approach with Stub→Test→Fix pattern.
 
-Test at boundaries, not every method:
-- **Router**: HTTP request → mock Service → HTTP response
-- **Service**: Entity in → mock Repository → Entity out
-- **Repository**: Entity → real database → Entity
-- **Client**: Request → MSW/VCR mock → Response
-
-### Implementation Pattern: Stub→Test→Fix
-
-#### STUB Phase
-Create method signatures that throw NotImplementedError:
-
-```typescript
-// Example
-async createUser(entity: UserEntity): Promise<UserEntity> {
-  throw new Error('Not implemented');
-}
-```
-
-```python
-# Example
-def create_user(self, entity: UserEntity) -> UserEntity:
-    raise NotImplementedError("create_user not implemented")
-```
-
-#### TEST Phase
-Write tests for layer boundary behavior:
-
-**Router tests:**
-```typescript
-// Test real HTTP → mocked service
-it('POST /users creates user', async () => {
-  const mockService = { createUser: jest.fn().mockResolvedValue(userEntity) };
-  const response = await app.inject({
-    method: 'POST',
-    url: '/users',
-    payload: { email: 'test@example.com', name: 'Test' }
-  });
-  expect(response.statusCode).toBe(201);
-  expect(mockService.createUser).toHaveBeenCalled();
-});
-```
-
-**Service tests:**
-```typescript
-// Test real entity → mocked repository
-it('createUser validates and persists', async () => {
-  const mockRepo = { create: jest.fn(), findByEmail: jest.fn() };
-  const service = new UserService(mockRepo);
-  const entity = UserEntity.fromRequest({ email: 'test@example.com', name: 'Test' });
-  await service.createUser(entity);
-  expect(mockRepo.findByEmail).toHaveBeenCalledWith('test@example.com');
-  expect(mockRepo.create).toHaveBeenCalled();
-});
-```
-
-**Repository tests:**
-```typescript
-// Test real entity → real database (Docker)
-it('create persists to database', async () => {
-  const testDb = await TestDatabase.getInstance();
-  const repo = new UserRepository(testDb.db);
-  const entity = new UserEntity(undefined, 'test@example.com', 'Test');
-  const result = await repo.create(entity.toRecord());
-  expect(result.id).toBeDefined();
-  expect(result.email).toBe('test@example.com');
-});
-```
-
-#### FIX Phase
-Implement methods to pass tests:
-
-Follow dependency order: **Entity → Repository → Service → Router**
-
-```typescript
-// Example service implementation
-async createUser(entity: UserEntity): Promise<UserEntity> {
-  const validation = entity.validate();
-  if (!validation.isValid) {
-    throw new ValidationError(validation.errors.join(', '));
-  }
-
-  const existing = await this.repository.findByEmail(entity.email);
-  if (existing) {
-    throw new BusinessRuleError('Email already exists');
-  }
-
-  const record = entity.toRecord();
-  const created = await this.repository.create(record);
-  return UserEntity.fromRecord(created);
-}
-```
-
-### Quality Checks
-
-Before marking complete:
-- [ ] All stubs replaced with implementations
-- [ ] All tests passing
-- [ ] Layer boundaries respected
-- [ ] Proper error handling
-- [ ] Types/interfaces defined
-- [ ] No NotImplementedError remaining
+Follow the testing patterns and architectural standards from the loaded skills to ensure quality implementation.
 
 ## Step 4: Handle Discovered Work
 

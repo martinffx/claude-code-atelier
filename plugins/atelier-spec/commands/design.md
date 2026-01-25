@@ -62,34 +62,15 @@ Read multiple sources:
 
 ## Step 4: Generate Technical Design
 
+<skill-prompt>
+Load: spec:architect
+</skill-prompt>
+
 @architect create technical design following project standards.
 
 **Mode: INITIAL - Design Entire Feature**
 
-Apply architectural patterns based on requirements and loaded context:
-
-**Determine needed components:**
-- Entities (domain models)
-- Services (business logic)
-- Repositories (data persistence) - if database needed
-- Routes (API endpoints) - if external exposure needed
-- Events (async communication) - if event-driven
-- Clients (external integrations) - if calling external APIs
-
-**Select architecture pattern:**
-- Standard CRUD API: Router → Service → Repository → Database
-- External API: Router → Service → Client → External API
-- Event-Driven Consumer: Consumer → Service → Repository → Database
-- Event-Driven Producer: Router → Service → Producer → Event Broker
-- Hybrid: Combination of above
-
-**Design components:**
-- Domain model with entities and methods (fromRequest, toRecord, toResponse, validate)
-- Service interfaces with business operations
-- Repository interfaces with data operations
-- API endpoints (REST, GraphQL, etc.)
-- Database schema (tables, indexes, constraints)
-- Events (if applicable)
+Apply architectural patterns from spec:architect skill based on requirements and loaded context.
 
 **Mode: CHANGE - Design Modifications**
 

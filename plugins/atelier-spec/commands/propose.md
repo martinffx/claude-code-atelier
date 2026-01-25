@@ -22,9 +22,9 @@ Extract current state:
 - Current business rules and constraints
 - API endpoints and data models
 
-## Step 3: Gather Change Requirements
+## Step 3: Discovery Interview for Change Scope
 
-@oracle conduct lightweight interview for change.
+@oracle conduct lightweight discovery interview to define change scope and requirements.
 
 Show current feature implementation context.
 

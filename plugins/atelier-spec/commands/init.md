@@ -54,9 +54,9 @@ Verify creation:
 ls -la docs/
 ```
 
-## Step 4: Gather Product Context
+## Step 4: Conduct Discovery Interview for Requirements
 
-@oracle conduct guided product interview.
+@oracle conduct guided product discovery interview.
 
 Ask user these questions (one at a time):
 

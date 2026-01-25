@@ -56,9 +56,9 @@ If code found:
 If no code found:
 - Set mode: GREENFIELD
 
-## Step 4: Gather Requirements
+## Step 4: Requirements Discovery
 
-@oracle conduct structured interview based on mode.
+@oracle conduct structured discovery interview to gather user stories, acceptance criteria, and scope boundaries.
 
 ### If GREENFIELD (no existing code):
 
