@@ -250,6 +250,10 @@ If user chooses APPROVE:
 
 ## Step 6: Create Beads Epic
 
+<skill-prompt>
+Load: beads, spec:architect
+</skill-prompt>
+
 @architect create Beads epic with tasks after approval.
 
 Create epic:

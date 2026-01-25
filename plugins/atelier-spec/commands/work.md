@@ -4,6 +4,10 @@ Optional format: `<feature>` or empty (any ready task)
 
 ## Step 1: Check Beads and Find Ready Task
 
+<skill-prompt>
+Load: beads
+</skill-prompt>
+
 @clerk check Beads installation and find next ready task.
 
 Check Beads:
