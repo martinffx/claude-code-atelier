@@ -4,6 +4,13 @@
 
 - **breaking:** rename the `recon` agent to `sentinel`. Existing Atelier configuration is migrated automatically and legacy generated files are removed during the next command.
 
+## [3.1.2](https://github.com/martinffx/atelier/compare/v3.1.1...v3.1.2) (2026-08-09)
+
+
+### Bug Fixes
+
+* **spec-implement:** persist missing plan artifacts ([8391bb6](https://github.com/martinffx/atelier/commit/8391bb62726ed189e1e745a7af69e385fa74c991))
+
 ## [3.1.1](https://github.com/martinffx/atelier/compare/v3.1.0...v3.1.1) (2026-08-09)
 
 
