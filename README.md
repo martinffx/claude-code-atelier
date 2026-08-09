@@ -39,8 +39,10 @@ flowchart TD
 
     O -->|Bounded work| IP[spec-plan: Inline Plan]
     IP --> IA{Developer approval}
-    IA -->|Approved| I[Implement directly]
+    IA -->|Approved| IS[Stop]
     IA -.->|Revise| IP
+
+    IS -->|New implementation request| I[Implement directly]
     I --> V[Validate]
     V -.->|Issues found| I
     IP -.->|Needs brainstorming| B
@@ -48,14 +50,16 @@ flowchart TD
 
     O -->|Substantial work| B[spec-brainstorm]
     B --> D[design.md]
-    D --> G[oracle-grill-me]
+    D --> BS[Stop]
+    BS -->|New planning request| G[oracle-grill-me]
     G --> P[spec-plan]
     G -.->|Refine design| D
     P --> SA{Developer approval}
     SA -->|Approved| J[plan.json]
     SA -.->|Revise plan| P
     SA -.->|Revisit design| B
-    J --> SI[spec-implement]
+    J --> PS[Stop]
+    PS -->|New implementation request| SI[spec-implement]
     SI --> CR[code-review]
     CR --> F[spec-finish]
     F --> PR[code-pull-request]
@@ -64,7 +68,7 @@ flowchart TD
     F -.->|Issues found| SI
 ```
 
-The workflow is deliberately harder to rush than an unstructured agent session. It records decisions when they need to survive the conversation, keeps implementation tied to an approved plan, and requires evidence before calling the work complete.
+The workflow is deliberately harder to rush than an unstructured agent session. `spec-brainstorm` writes only `design.md`, and `spec-plan` writes only its selected plan output. Each skill then stops. The developer starts planning and implementation with separate requests. This records decisions when they need to survive the conversation, keeps implementation tied to an approved plan, and requires evidence before calling the work complete.
 
 ## Grill the idea
 

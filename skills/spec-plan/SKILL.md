@@ -3,7 +3,8 @@ name: spec-plan
 description: >
   Write approved implementation plans in one of two modes. Explicit Inline mode creates a
   conversational plan for bounded work. Spec-backed Plan converts an approved design.md into
-  plan.json and optional tracked tasks. Trigger after atelier-orchestrator selects a mode, when
+  plan.json. Both modes stop after producing their plan output. Trigger after
+  atelier-orchestrator selects a mode, when
   the user asks to plan work, or after spec-brainstorm completes. Direct invocation without a
   selected mode uses Spec-backed Plan. Do NOT use for research or execution.
 user-invocable: true
@@ -13,12 +14,24 @@ user-invocable: true
 
 Write a proportional plan so clear that any engineer can follow it. The selected planning
 mode determines whether the plan stays in the conversation or becomes a persisted structured
-artifact. This skill does not write code.
+artifact. This skill does not write code or start implementation.
 
 `atelier-orchestrator` owns automatic classification and the human may override it. When this
 skill is directly invoked without a selected mode, use Spec-backed Plan. If Inline planning
 reveals substantial design or coordination needs, ask the human whether to switch to a
 Spec-backed Plan before presenting the plan.
+
+## Terminal boundary
+
+This skill produces exactly one plan output and then stops:
+
+- Inline mode presents the plan in conversation and changes no repository files.
+- Spec-backed mode creates or updates only `plan.json` from an approved `design.md`.
+
+Planning drafts and annotation cycles stay in conversation. Do not modify `design.md`, persist
+a Markdown plan draft, create tracker entries, invoke another workflow skill, or edit
+implementation files. These rules still apply when the human asks to plan and implement in one
+request. Implementation requires a later, explicit request after this skill has finished.
 
 ## Planning Rules
 
@@ -70,11 +83,11 @@ Every revision invalidates prior approval. End each revised plan with "Inline Pl
 for review." and stop until the human explicitly approves that complete version. Do not
 implement until the current plan is approved.
 
-Approval authorizes implementation. Implement the approved conversational plan directly using
-the Inline execution safeguards in `atelier-orchestrator`. Do not invoke `spec-implement`,
-`spec-finish`, `code-subagents`, or task tracking.
-
-Do not create planning artifacts or tracker entries during this handoff.
+When the human approves the Inline Plan, acknowledge that the plan is approved and stop. Do not
+implement it in the same invocation. A later explicit implementation request may execute the
+approved conversational plan directly using the Inline execution safeguards in
+`atelier-orchestrator`; it does not use `spec-implement`, `spec-finish`, `code-subagents`, or
+task tracking.
 
 ## Spec-backed Plan Artifacts
 
@@ -84,8 +97,8 @@ docs/specs/YYYY-MM-DD-<feature-name>/
 └── plan.json  ← This skill's output
 ```
 
-The plan starts as a markdown draft for human annotation, then gets converted to
-structured plan.json when approved.
+The plan starts as a conversational draft for human annotation, then gets converted to
+structured `plan.json` when approved.
 
 ### plan.json Schema
 
@@ -179,8 +192,8 @@ structured plan.json when approved.
 
 ## Spec-backed Step 1: Write the Plan Draft
 
-Read the approved design.md, then write a plan as a markdown section in the same
-document or as a separate draft.
+Read the approved `design.md`, then present the plan draft in conversation. Do not write the
+draft into `design.md` or create a separate draft file.
 
 ### Plan quality
 
@@ -256,25 +269,12 @@ explicitly approves it.
 When the human approves — "looks good", "approved", "create tasks" — convert the plan
 into plan.json.
 
-### Task Tracking
-
-Read `docs/agents/issue-tracker.md` when it exists. Create tracker entries only when that
-document configures a tracker, mirroring is enabled, and tracking adds execution value. Do not
-choose or configure a tracker here. Do not duplicate a simple plan.json into a tracker merely to
-satisfy the workflow.
-
 ### What to do
 
 1. Convert the annotated plan draft into structured plan.json
 2. Each task maps to a unit with inputs, description, files, and validation
 3. Dependencies between tasks are captured in `depends_on` fields
-4. When execution benefits from configured task tracking, create entries according to
-   `docs/agents/issue-tracker.md`:
-   - Create any configured feature container
-   - Add tasks with clear descriptions
-   - Mirror dependencies when the configured tracker supports them
-5. The plan.json is the source of truth for task details; the task tracker
-tracks execution state
+4. Do not create tracker entries or modify any file other than `plan.json`
 
 ### Verification
 
@@ -294,18 +294,15 @@ After creating plan.json, verify:
 
 ## Handoff
 
-When plan.json is created, and any useful configured tracker entries have been created, the next
-step is **spec-implement** in Spec-backed mode.
+When `plan.json` is created, report its path and stop.
 
 Tell the human:
 
-> "Spec-backed Plan is approved. Ready to start implementation?"
->
-> **Autonomous** — I'll work through all tasks, only stopping if blocked.
->
-> **Batched** — I'll do 3-5 tasks at a time, then report and wait for feedback.
+> "Planning complete. Plan written to `docs/specs/<path>/plan.json`. A separate
+> `spec-implement` invocation can execute it."
 
-Do not start implementing. That's spec-implement's job.
+Do not invoke `spec-implement`, offer execution modes, or start implementing. The human must
+start implementation with a separate request.
 
 Minor implementation deviations may be recorded inline and reflected in plan.json when they do
 not change approved behavior, scope, architecture, public contracts, or major dependencies.
@@ -320,7 +317,7 @@ spec-brainstorm. See **atelier-orchestrator** for iteration patterns.
 |----------------------------|--------|
 | Inline / "write a plan" | Present the complete Inline Plan from the template, stop |
 | Inline / "I added notes" | Apply the changes, re-present the entire updated Inline Plan, and stop for renewed approval |
-| Inline / "approved" | Implement the approved conversational plan directly; create no artifacts |
+| Inline / "approved" | Acknowledge approval and stop; create no artifacts and do not implement |
 | Spec-backed / "write a plan" | Write the plan draft from design.md, stop |
 | Spec-backed / "I added notes" | Re-read, address all notes, do NOT implement |
-| Spec-backed / "approved" / "create tasks" | Create plan.json and useful task tracking |
+| Spec-backed / "approved" / "create tasks" | Create only plan.json, report its path, and stop |
