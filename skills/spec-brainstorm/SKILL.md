@@ -53,7 +53,8 @@ explain a unit's job in one sentence, it's doing too much.
 
 Explore the current structure first. Follow existing patterns. Targeted improvements only.
 No unrelated refactoring. Understand why things are the way they are before proposing
-changes.
+changes. Treat loaded skills as relevant guidance, not as a requirement to apply every pattern
+they contain.
 
 ### Decomposition
 
@@ -62,11 +63,17 @@ into sub-projects before diving into details. Each substantial sub-project gets 
 and plan; bounded sub-projects can use Inline Plans. A spec that tries to cover three
 subsystems helps no one.
 
+Keep migrations separate from authorization, product behavior, infrastructure, schema, and
+test-platform projects. Do not use a migration as permission to redesign adjacent systems.
+
 ### YAGNI ruthlessly
 
 Remove unnecessary features from all designs. If a capability isn't needed for the first
 user story, it doesn't go in the spec. Every feature is a cost — to build, to test,
 to maintain, to understand later. Push back on scope creep during discovery.
+
+Future consumers do not justify shared infrastructure. A "reusable foundation" may describe
+an architectural quality, but it is not a user story or a current requirement.
 
 ---
 
@@ -157,6 +164,16 @@ behaviour.
 Collect research findings for the spec as the foundation. Do not write `design.md` until the
 approved design sections are assembled in Step 4c.
 
+The research section must map each relevant concern to the code that already handles it and
+the current requirement that drives the decision:
+
+| Concern | Existing solution | Decision | Current requirement |
+|---------|-------------------|----------|---------------------|
+| IDs | Shared parser and ID type | reuse | Parse route parameters |
+
+Use only `reuse`, `modify`, `delete`, or `new` in the Decision column. Every `new` concept must
+map to a present requirement; a future or hypothetical consumer does not qualify.
+
 **Tell the human:** "I've written the research section of the spec. Ready for you to
 review before I continue with the design."
 
@@ -173,6 +190,9 @@ then write the spec file.
 
 Before settling on a design, present **2-3 approaches** with trade-offs.
 
+The first approach must keep the existing architecture and make the smallest correct change.
+Present broader approaches only when a current requirement makes their extra cost relevant.
+
 For each approach, address:
 
 1. **What it looks like** — Brief architecture sketch
@@ -181,6 +201,9 @@ For each approach, address:
 4. **Complexity estimate** — Rough sense of implementation effort
 
 Lead with your recommended option and explain why it wins.
+
+Before asking the human to approve an approach or design batch, remove anything justified only
+by completeness, consistency, or hypothetical reuse.
 
 **Example:**
 
@@ -324,6 +347,8 @@ After writing the file, check it with fresh eyes:
    decomposed in Step 2. If it's still too broad, flag it now.
 4. **Ambiguity check** — Could any requirement be interpreted two ways? If so,
    pick one interpretation, state it explicitly, and let the human correct you.
+5. **Necessity check** — Delete concepts justified only by completeness, consistency, or
+   hypothetical reuse. Confirm every remaining new concept maps to a current requirement.
 
 **Substance rule:** if a fix changes the substance of an approved section,
 re-present that section for approval. Wording and consistency fixes go inline —

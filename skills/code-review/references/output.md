@@ -14,6 +14,22 @@
 - Pre-existing: N | Introduced: N
 - Honored decisions: N
 
+## Unnecessary scope
+
+- {Unrequested behavior or infrastructure, or `None`}
+
+## Deletion candidates
+
+- {Files, symbols, wrappers, or tests that can be removed, or `None`}
+
+## Smallest viable alternative
+
+{The smallest implementation that preserves the user goal and prior behavior, or `None`}
+
+## Required SDD corrections
+
+- {Changes needed so the SDD records the smaller result, or `None`}
+
 ## Critical (Fix before merge)
 
 ### {Finding Title}
@@ -29,6 +45,7 @@
   {Detailed explanation of why this was flagged}
   </details>
 - **Suggestion**: {How to fix}
+- **Requires user approval**: {Yes when the suggestion expands behavior or infrastructure; otherwise No}
 - **Prior decision reopened**: {Why the recorded rationale no longer applies; omit when not applicable}
 
 ## High Priority
@@ -56,6 +73,7 @@
 Omit the **Honored Decisions** section when there are no honored decisions. Keep each entry to
 one compact bullet; do not repeat the full finding, impact, reasoning, or suggestion.
 Severity and pre-existing/introduced statistics count active findings only.
+Always render the four simplicity sections, using `None` when no evidence supports an item.
 
 ---
 
@@ -70,6 +88,7 @@ Pre-existing: {Yes/No}
 Issue: {Brief description}
 Reasoning: {Why this matters}
 Suggestion: {Fix}
+Requires user approval: {Yes/No}
 Prior decision reopened: {Why the recorded rationale no longer applies; omit when not applicable}
 ```
 
@@ -146,6 +165,22 @@ Implements OAuth login flow with token refresh. Generally well-structured with p
 - Pre-existing: 1 | Introduced: 3
 - Honored decisions: 0
 
+## Unnecessary scope
+
+- None
+
+## Deletion candidates
+
+- None
+
+## Smallest viable alternative
+
+None
+
+## Required SDD corrections
+
+- None
+
 ## Critical (Fix before merge)
 
 ### Token stored in localStorage
@@ -214,3 +249,4 @@ Implements OAuth login flow with token refresh. Generally well-structured with p
 3. **Extended reasoning** should be collapsible in markdown renderers
 4. **Positive findings** help balance the review tone
 5. **Honored decisions** stay out of active severity counts and are summarized without restating the finding
+6. **Expansion findings** require user approval even when an SDD proposes the expansion

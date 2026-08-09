@@ -20,6 +20,23 @@ skill is directly invoked without a selected mode, use Spec-backed Plan. If Inli
 reveals substantial design or coordination needs, ask the human whether to switch to a
 Spec-backed Plan before presenting the plan.
 
+## Planning Rules
+
+- Organize tasks around required behavior, not one task per layer.
+- Record a short list of behavior the change must preserve.
+- For each task, identify existing code to reuse, modify, or delete.
+- Map every new abstraction to a present requirement and its current consumers.
+- Introduce shared infrastructure only when at least two current consumers demonstrate the
+  same need.
+- Group tests by changed contract and active boundary. Do not repeat the CRUD matrix across
+  layers.
+
+### Proportionality Gate
+
+Before presenting any plan, compare its size and concepts with the requested behavior. If a
+bounded migration or refactor introduces shared infrastructure, unrelated behavior, or a plan
+substantially larger than the behavior being changed, stop and simplify it.
+
 ## Outputs
 
 ### Inline Plan (when explicitly selected)
@@ -33,7 +50,8 @@ structure. Omit optional subsections rather than rendering empty headings.
 Read enough of the codebase to identify the current behavior, boundaries, affected files,
 and concrete validation. Keep the plan proportional to implementation risk. Fill the
 template with confirmed, file-and-symbol-level details, including cross-file wiring or
-ordering constraints where they matter.
+ordering constraints where they matter. Apply the Planning Rules and Proportionality Gate
+before presenting it.
 
 Do not manufacture phases, task IDs, dependency graphs, acceptance matrices, `design.md`,
 `plan.json`, tracker entries, or harness todos. The conversation is the plan artifact.
@@ -76,14 +94,17 @@ structured plan.json when approved.
   "feature": "user-authentication",
   "spec": "docs/specs/2026-03-08-user-auth/design.md",
   "goal": "Add email/password authentication with session management",
+  "preserved_behavior": [
+    "Existing sessions remain valid"
+  ],
   "phases": [
     {
       "id": "P1",
-      "name": "Domain Model",
+      "name": "Authenticate with email and password",
       "tasks": [
         {
           "id": "T1",
-          "name": "Implement UserEntity with validation",
+          "name": "Accept valid credentials and reject invalid credentials",
           "depends_on": [],
           "inputs": [
             "User schema from design.md",
@@ -91,9 +112,18 @@ structured plan.json when approved.
           ],
           "description": "Create UserEntity with email and password fields. Implement validation using a Result type. Password must be hashed, never stored plaintext.",
           "files": {
+            "reuse": ["src/auth/password.ts"],
             "create": ["src/entities/user.ts", "tests/entities/user.test.ts"],
-            "modify": []
+            "modify": [],
+            "delete": []
           },
+          "new_abstractions": [
+            {
+              "name": "UserEntity",
+              "requirement": "Validate email/password credentials",
+              "consumers": ["POST /sessions"]
+            }
+          ],
           "validation": {
             "tests": [
               "rejects empty email",
@@ -121,6 +151,7 @@ structured plan.json when approved.
 | feature | string | Kebab-case feature name |
 | spec | string | Path to the approved design.md |
 | goal | string | One-sentence goal |
+| preserved_behavior | string[] | Short list of existing behavior that must remain unchanged |
 | phases | Phase[] | Implementation phases in dependency order |
 
 #### Phase fields
@@ -140,7 +171,8 @@ structured plan.json when approved.
 | depends_on | string[] | Task IDs that must complete first |
 | inputs | string[] | What you need to know before starting |
 | description | string | What to build, key decisions, constraints |
-| files | {create, modify} | Files to create and modify |
+| files | {reuse, create, modify, delete} | Existing code to reuse, modify, or delete, plus files to create |
+| new_abstractions | {name, requirement, consumers}[] | New abstractions mapped to a present requirement and current consumers |
 | validation | {tests, acceptance} | How to verify the task is done |
 
 ---
@@ -164,19 +196,18 @@ Each task should be self-contained and include:
 
 - **Inputs**: What you need to know or have before starting (from spec, existing code)
 - **Description**: What to build, key design decisions, constraints
-- **Files**: Exact paths to create and modify
-- **Validation**: Tests that must pass and acceptance criteria
+- **Files**: Exact existing code to reuse, modify, or delete, and files to create
+- **New abstractions**: Present requirement and current consumers for each; use an empty list
+  when the task adds none
+- **Validation**: Tests grouped by changed contract and active boundary, plus acceptance criteria
 
 No exact code snippets. No implementation details. The task says WHAT and HOW TO VERIFY,
 not HOW to write the code.
 
 ### Task ordering
 
-Follow bottom-up dependency ordering:
-
-```
-Entity → Repository → Service → Router/Consumer
-```
+Order tasks by required behavior and real dependencies. Keep changes across layers in one task
+when they implement and verify one contract; do not create one task per layer.
 
 ### Task size
 
@@ -251,8 +282,13 @@ After creating plan.json, verify:
 - Every task has an ID and depends_on field
 - Dependencies form a valid DAG (no cycles)
 - Every task has inputs, description, and validation
+- Preserved behavior is short and explicit
+- Every task identifies code to reuse, modify, or delete
+- Every new abstraction names its present requirement and current consumers
+- Shared infrastructure has at least two current consumers with the same demonstrated need
 - File paths are complete and specific
-- Validation criteria are concrete and testable
+- Validation criteria are concrete, testable, and grouped by changed contract and active boundary
+- The plan passes the Proportionality Gate
 
 ---
 

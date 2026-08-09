@@ -33,6 +33,16 @@ The plan may be inline in the conversation or backed by persisted spec artifacts
 the mode before invoking an artifact-producing skill, state the choice with one brief
 reason, and let the human override it.
 
+## Governing Principles
+
+Invoking a skill selects relevant guidance. It does not make every pattern in every loaded
+skill part of the solution. Existing source, explicit requirements, and the smallest correct
+change determine which patterns apply.
+
+Begin with the current design and the minimum behavior-preserving change. Product,
+infrastructure, and architectural expansion require explicit scope. Keep **ponytail** active
+throughout development when it is available or required by the repository.
+
 ## Planning Modes
 
 ### Inline Plan (default)

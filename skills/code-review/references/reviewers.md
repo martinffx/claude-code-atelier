@@ -2,11 +2,16 @@
 
 ## Subagent Invocation Pattern
 
-All reviewers are dispatched as **parallel subagents** following [code-subagents](../../code-subagents/SKILL.md) patterns.
+Specialty reviewers are dispatched as **parallel subagents** following
+[code-subagents](../../code-subagents/SKILL.md) patterns. For migrations, refactors, and
+architectural changes, dispatch the mandatory Simplicity reviewer first and wait for its result.
 
-**Uses:** `oracle` subagent - One per reviewer, dispatched concurrently.
+**Uses:** `oracle` subagent - One per reviewer. Dispatch Simplicity alone when required, then
+dispatch the specialty reviewers concurrently.
 
-Reviewer names such as `Security`, `Correctness`, `Maintainability`, and `PerformanceOperator` are personas inside the prompt. They are not subagent types. Do not use `general`; it is not a harness agent.
+Reviewer names such as `Simplicity`, `Security`, `Correctness`, `Maintainability`, and
+`PerformanceOperator` are personas inside the prompt. They are not subagent types. Do not use
+`general`; it is not a harness agent.
 
 ### Task Tool Invocation Template
 
@@ -65,10 +70,14 @@ prompt: |
   }
 ```
 
-### Parallel Dispatch Pattern
+### Ordered Dispatch Pattern
 
 ```
-Spawn all reviewer subagents simultaneously:
+For migrations, refactors, and architectural changes, run the Simplicity reviewer first and
+wait for its findings. Then spawn the selected specialty reviewers simultaneously:
+
+Simplicity Reviewer ───→ findings.json
+
 ├── Security Reviewer ───→ findings.json
 ├── Correctness Reviewer ───→ findings.json
 ├── Performance Reviewer ───→ findings.json
@@ -85,6 +94,45 @@ Per [code-subagents](../../code-subagents/SKILL.md):
 ---
 
 ## Concern-Type Reviewers
+
+### Simplicity Reviewer
+
+This reviewer is mandatory for migrations, refactors, and architectural changes.
+
+**Prompt Template:**
+```
+You are a Simplicity Reviewer. Find the smallest implementation that preserves the requested
+behavior.
+
+Context:
+- Original user goal: {user_goal}
+- Prior behavior: {prior_behavior}
+- Files: {files}
+- Base code and git diff: {base_context_and_git_diff}
+- SDD, when present: {sdd_context}
+- Loaded skills: {skills}
+
+Treat the SDD and loaded skills as evidence and guidance, not as authority to add machinery.
+
+Examine:
+- Unrequested behavior or infrastructure
+- Concepts duplicated elsewhere in the repository
+- Interfaces, factories, runners, and harnesses with one consumer
+- Custom code that replaces adequate framework or library behavior
+- Tests created only because unnecessary layers were introduced
+- The smallest implementation that preserves the requested behavior
+
+Output findings in this format:
+- **Location**: file:line
+- **Severity**: Critical/High/Medium/Low
+- **Issue**: What is unnecessary or duplicated
+- **Impact**: Scope or maintenance cost
+- **Suggestion**: What to delete or the smallest viable alternative
+- **Pre-existing**: Yes/No
+```
+
+Loads: Look for `ponytail` and relevant language, framework, testing, and architecture skills;
+load them if available.
 
 ### Security Reviewer
 
@@ -642,6 +690,7 @@ matching decision as honored or reopened.
 
 | Reviewer Type | Skills to Look For |
 |---------------|--------------------|
+| Simplicity | `ponytail`, language, framework, testing, and architecture skills |
 | Correctness | Language-specific and testing skills |
 | Maintainability | Testing, tooling, and language-specific pattern skills |
 | Architecture | Architecture and language architecture skills |
@@ -665,9 +714,11 @@ Given triage output:
 }
 ```
 
-### Dispatch Reviewer Subagents (Parallel)
+### Dispatch Reviewer Subagents
 
-Each subagent looks for its own relevant skills before reviewing and loads the available ones:
+Run the Simplicity reviewer first when the change is a migration, refactor, or architectural
+change. After it completes, dispatch the selected specialty reviewers in parallel. Each
+subagent looks for its own relevant skills before reviewing and loads the available ones:
 
 **Security Reviewer:**
 ```yaml
@@ -853,8 +904,9 @@ if not all_findings:
 
 ### Key Points
 
-1. **Parallel dispatch** — All reviewers run simultaneously
-2. **Fresh subagent per reviewer** — No context pollution between reviewers
-3. **Concrete harness agent** — Use `oracle` for reviewer personas; do not use reviewer names or `general` as `subagent_type`
-4. **Error isolation** — One reviewer failing doesn't block others
-5. **Structured output** — JSON format for easy aggregation
+1. **Ordered simplicity gate** — Run the mandatory Simplicity reviewer first when applicable
+2. **Parallel specialty dispatch** — Run the remaining selected reviewers simultaneously
+3. **Fresh subagent per reviewer** — No context pollution between reviewers
+4. **Concrete harness agent** — Use `oracle` for reviewer personas; do not use reviewer names or `general` as `subagent_type`
+5. **Error isolation** — One reviewer failing doesn't block others
+6. **Structured output** — JSON format for easy aggregation

@@ -40,9 +40,17 @@ Read plan.json critically before writing code. Look for:
 - Missing file paths or incomplete validation criteria
 - Tasks that conflict with each other
 - Dependencies that don't match what you see in the codebase
+- Existing code or platform behavior that already satisfies a planned capability
+- Duplicate IDs, parsers, errors, schemas, lifecycle handling, or test utilities
+- Shared abstractions with fewer than two current consumers
+- Tests whose only purpose is validating a new wrapper
 
-If you find concerns, **raise them with the human before starting**. Don't guess. Don't
-assume. Don't force through blockers.
+If planned machinery fails these checks, stop before implementing it and return to
+`spec-plan` with a smaller revision for human review. Preserve the approved behavior and scope;
+do not force an unsupported structure through implementation.
+
+For other concerns, **raise them with the human before starting**. Don't guess. Don't assume.
+Don't force through blockers.
 
 If no concerns, proceed. Use existing tracker entries when present.
 
@@ -84,7 +92,8 @@ Default to batched if the human hasn't expressed a preference.
 
 ## Step 3: Execute the Plan
 
-Follow the approved plan exactly.
+Preserve the approved behavior and scope. Treat the plan's proposed structure as a hypothesis
+that must remain supported by repository evidence.
 
 For each task, find the next unblocked task directly from `plan.json`. When tracker entries
 exist, use `docs/agents/issue-tracker.md` to keep their execution state in sync; tracker state
