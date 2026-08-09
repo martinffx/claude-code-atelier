@@ -7,6 +7,11 @@ implementation must preserve. Contrast the current and desired states when usefu
 Write enough for an engineer unfamiliar with the immediate problem to understand
 the plan. Do not repeat implementation steps that belong under Changes.
 
+### Preserved Behavior
+
+List the existing behavior that must remain unchanged. Keep the list short and tied to
+observable contracts.
+
 ### Decisions
 
 Include this subsection when the plan depends on meaningful implementation choices.
@@ -38,17 +43,25 @@ is more than one change.
 
 For each change:
 
-- Start with the exact file path and a concise description.
+- Start with the required behavior and the exact affected file paths.
 - Name the affected functions, types, routes, configuration keys, or other symbols.
 - Explain the current behavior when it matters to the change.
 - Describe the required behavior and important implementation constraints.
+- Identify existing code to reuse, modify, or delete.
+- Map each new abstraction to a present requirement and its current consumers. Shared
+  infrastructure requires at least two current consumers with the same demonstrated need.
 - Explain cross-file wiring, data flow, error handling, and execution order where relevant.
 - Identify files to create, modify, rename, or delete.
-- Mention corresponding test changes alongside the behavior they verify.
+- Group tests by changed contract and active boundary. Do not repeat the CRUD matrix across
+  layers.
 - Use a short signature or pseudocode only when it removes material ambiguity.
 
 The plan should provide enough detail for another engineer to implement without
 rediscovering the approach, while avoiding line-by-line coding instructions.
+
+Before presenting the plan, compare its size with the requested behavior. If a bounded
+migration or refactor introduces shared infrastructure, unrelated behavior, or a plan
+substantially larger than the behavior being changed, simplify it first.
 
 ## Known Limitations
 

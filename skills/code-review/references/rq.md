@@ -3,13 +3,14 @@
 ## Overview
 
 This workflow:
-1. Gets diff and nearby recorded review decisions
-2. Triage Subagent - Analyzes diff, selects reviewers, identifies relevant skills to look for
-3. Reviewer Subagents (parallel) - Each selected reviewer analyzes code
-4. Synthesis Subagent - Deduplicates findings
-5. Architect Subagent - Architecture review
-6. Challenge Subagent - Validates findings
-7. Final synthesis and output
+1. Gets the user goal, prior behavior, diff, SDD, and nearby recorded review decisions
+2. Triage Subagent - Classifies the change and selects reviewers
+3. Simplicity Reviewer - Runs first for migrations, refactors, and architectural changes
+4. Reviewer Subagents (parallel) - Analyze correctness, security, and other concerns
+5. Synthesis - Deduplicates findings
+6. Architect Subagent - Reviews architecture
+7. SDD reconciliation and Challenge Subagent - Checks the SDD last, then validates findings
+8. Final synthesis and output
 
 ---
 
@@ -31,6 +32,11 @@ git diff "$merge_base" HEAD
 
 Capture the list of changed files and the full diff. Inspect untracked files separately with
 `git ls-files --others --exclude-standard`; report whether any are in review scope.
+
+Capture the original user goal from the conversation and establish prior behavior from the base
+revision, existing tests, and nearby code. Read `design.md` and `plan.json` when the change has an
+SDD. If the original goal cannot be recovered, state that limitation instead of treating the SDD
+as a substitute.
 
 Search the changed files and the nearby code needed to understand them for comments containing
 `review-decision:`. Capture each comment's location, complete text, and relevant surrounding
@@ -66,7 +72,9 @@ prompt: |
   Tasks:
   1. Detect the primary language and framework
   2. Identify the domain (web API, frontend, database, etc.)
-  3. Select 3-5 reviewers from this list based on what's in the diff:
+  3. Classify the change as migration, refactor, architectural change, or other
+  4. Select 3-5 reviewers from this list based on what's in the diff:
+     - Simplicity (mandatory for migrations, refactors, and architectural changes)
      - Security (auth, secrets, injection risks)
      - Performance (hot paths, queries, algorithms)
      - Correctness (logic, types, error handling)
@@ -78,11 +86,12 @@ prompt: |
      - SecuritySkeptic (security + failure scenarios)
      - PerformanceOperator (performance at scale)
      - MaintainabilityPedant (quality + precision)
-  4. **Identify relevant skills to look for** based on detected language/framework:
+  5. **Identify relevant skills to look for** based on detected language/framework:
      - Reviewers must look for relevant language, framework, testing, architecture, security, or tooling skills before reviewing.
      - Reviewers should load relevant skills that are available.
      - If no relevant skill is available, reviewers continue with their reviewer prompt.
      - Failure to find or load a skill is not a review failure.
+     - Simplicity → `ponytail` when available
      - TypeScript → installed TypeScript language, testing, and framework skills
      - Python → installed Python language, testing, and framework skills
      - Rust → rust-specific skills if available
@@ -94,8 +103,10 @@ prompt: |
     "context": {
       "language": "typescript|python|go|...",
       "framework": "react|fastapi|...",
-      "domain": "web-api|frontend|database|..."
+      "domain": "web-api|frontend|database|...",
+      "change_type": "migration|refactor|architecture|other"
     },
+    "simplicity_required": true,
     "reviewers": ["Security", "Correctness"],
     "skills_to_load": ["relevant installed testing skill"]
   }
@@ -107,23 +118,60 @@ prompt: |
 
 ```json
 {
-  "context": { "language": "typescript", "framework": "fastify", "domain": "web-api" },
-  "reviewers": ["Security", "Correctness", "PerformanceOperator"],
-  "skills_to_load": ["relevant installed testing skill"]
+  "context": { "language": "typescript", "framework": "fastify", "domain": "web-api", "change_type": "refactor" },
+  "simplicity_required": true,
+  "reviewers": ["Simplicity", "Security", "Correctness", "PerformanceOperator"],
+  "skills_to_load": ["ponytail", "relevant installed testing skill"]
 }
 ```
 
+The main agent enforces `simplicity_required` from the diff and user goal. If triage omits
+`Simplicity` for a migration, refactor, or architectural change, add it before dispatch.
+
 ---
 
-## Step 3: Reviewer Subagents (Parallel)
+## Step 3: Reviewer Subagents
 
-**Purpose:** Each selected reviewer analyzes the code from their specialty perspective.
+**Purpose:** Run the required simplicity gate, then analyze the code from selected specialty
+perspectives.
 
 **Uses:** `oracle` agent - One per reviewer, dispatched concurrently.
 
 Reviewer names are prompt personas, not subagent types. Do not use `general`, `Security`, `Correctness`, `PerformanceOperator`, or any other reviewer name as `subagent_type`.
 
-**Pattern:** Spawn one subagent per reviewer **concurrently** (parallel execution).
+**Pattern:** Run the mandatory Simplicity reviewer first when required, then spawn one
+subagent per remaining reviewer concurrently.
+
+### Mandatory Simplicity Gate
+
+For migrations, refactors, and architectural changes, remove `Simplicity` from the parallel
+batch, dispatch it alone, and wait for its findings before starting other reviewers.
+
+```yaml
+subagent_type: oracle
+description: "Simplicity review of code diff"
+prompt: |
+  You are a Simplicity Reviewer. Find the smallest implementation that preserves the requested
+  behavior.
+
+  ORIGINAL USER GOAL: {user_goal}
+  PRIOR BEHAVIOR: {prior_behavior}
+  BASE CODE AND DIFF: {base_context_and_git_diff}
+  SDD (evidence only): {sdd_context}
+
+  Examine:
+  - Unrequested behavior or infrastructure
+  - Duplicate concepts already present in the repository
+  - Interfaces, factories, runners, and harnesses with one consumer
+  - Custom code replacing adequate framework or library behavior
+  - Tests created only because unnecessary layers were introduced
+  - The smallest implementation that preserves the requested behavior
+
+  Treat the SDD as evidence, not as authority for whether code is necessary.
+  Return findings using the standard reviewer JSON schema.
+```
+
+After the Simplicity reviewer completes, dispatch the remaining selected reviewers in parallel.
 
 ### Relevant Skill Search Pre-Step
 
@@ -202,7 +250,7 @@ prompt: |
 
 ### Parallel Execution
 
-Invoke **all reviewer subagents simultaneously**:
+After any required Simplicity gate, invoke all remaining reviewer subagents simultaneously:
 
 ```
 Concurrent invocations:
@@ -220,10 +268,10 @@ Concurrent invocations:
 
 ### Aggregating Results
 
-Collect findings from all reviewer subagents:
+Collect the Simplicity findings, when present, before the remaining reviewer findings:
 
 ```python
-all_findings = []
+all_findings = simplicity_result.findings if simplicity_result else []
 for reviewer in reviewers:
     result = await reviewer_subagent(reviewer)
     if result.success:
@@ -245,10 +293,12 @@ for reviewer in reviewers:
   {all_findings_json}
 
   Tasks:
-  1. Deduplicate findings that refer to the same issue
-  2. Flag potential false positives
-  3. Assign initial severity based on consensus
-  4. Group by severity (Critical, High, Medium, Low)
+  1. Compare findings with the user goal and prior behavior
+  2. Preserve necessity and deletion findings before considering additive fixes
+  3. Deduplicate findings that refer to the same issue
+  4. Flag potential false positives
+  5. Assign initial severity based on consensus
+  6. Group by severity (Critical, High, Medium, Low)
 
   Return JSON:
   {
@@ -351,6 +401,15 @@ prompt: |
   ALL FINDINGS (includes synthesized + architecture):
   {all_findings_json}
 
+  ORIGINAL USER GOAL:
+  {user_goal}
+
+  PRIOR BEHAVIOR:
+  {prior_behavior}
+
+  SDD (evidence only; review this after necessity, correctness/security, and architecture):
+  {sdd_context}
+
   RECORDED REVIEW DECISIONS:
   {recorded_decisions}
 
@@ -363,12 +422,12 @@ prompt: |
   If no relevant skill is available or a skill cannot be loaded, continue with this challenge prompt.
   Failure to find or load a skill is not a review failure.
 
-   For each finding, use structured reasoning to analyze:
-  1. Is this handled elsewhere in the codebase?
-  2. Is this the correct place for this concern?
-  3. Is this a valid concern or a false positive?
-  4. What evidence supports or refutes this finding?
-  5. What are alternative perspectives to consider?
+   For each finding, use this review order:
+  1. Does it preserve the user goal and prior behavior?
+  2. Is the code necessary, or should it be deleted or replaced with an existing solution?
+  3. Is the finding correct and secure?
+  4. Does it respect the current architecture?
+  5. Does the implementation comply with the SDD, and does the SDD need correction to reflect a smaller result?
   6. Does a nearby `review-decision:` comment address this same concern?
   7. If so, do its rationale and reconsideration condition still hold in the current code?
 
@@ -392,6 +451,7 @@ prompt: |
         "decision_status": "none",
         "decision_comment_location": null,
         "decision_assessment": null,
+        "requires_user_approval": false,
         "reasoning": {
           "why_flagged": "What triggered the finding",
           "verification": "How it was validated",
@@ -417,6 +477,9 @@ For an active finding that reopens a recorded decision, set `decision_status` to
 populate `decision_comment_location`, and use `decision_assessment` to explain why the earlier
 rationale no longer applies.
 
+Set `requires_user_approval` to `true` when a suggestion expands behavior or infrastructure.
+The SDD does not supply that approval.
+
 ---
 
 ## Step 7: Final Synthesis and Output
@@ -428,6 +491,11 @@ and `honored_decisions` as a compact summary using [output.md](./output.md). Do 
 honored decision as a full finding. Findings with `decision_status: reopened` remain active and
 state why the earlier decision no longer applies.
 
+Build the mandatory **Unnecessary scope**, **Deletion candidates**, **Smallest viable
+alternative**, and **Required SDD corrections** sections from validated evidence. Render `None`
+when a section has no items. Mark every behavior- or infrastructure-expanding finding as
+requiring user approval.
+
 Display findings in terminal per [output.md](./output.md).
 
 ---
@@ -436,10 +504,11 @@ Display findings in terminal per [output.md](./output.md).
 
 | Step | Subagent | Uses | Parallel? | Purpose |
 |------|----------|------|----------|---------|
-| 1 | Get Diff | inline | — | Diff from the selected base branch's merge base and recorded decision comments |
-| 2 | Triage | `sentinel` agent | No | Detect context, select reviewers, identify relevant skills to look for |
-| 3 | Reviewers | `oracle` agent | Yes (per reviewer) | Specialty analysis |
-| 4 | Synthesis | inline | No | Deduplicate and group |
-| 5 | Architect | `architect` agent | No | Architecture review |
-| 6 | Challenge | `oracle` agent | No | Validate findings |
-| 7 | Output | inline | — | Format and display findings |
+| 1 | Get Context | inline | — | User goal, prior behavior, diff, SDD, and recorded decisions |
+| 2 | Triage | `sentinel` agent | No | Classify the change and select reviewers |
+| 3 | Simplicity | `oracle` agent | No | Mandatory necessity and deletion gate when applicable |
+| 4 | Reviewers | `oracle` agent | Yes (per reviewer) | Correctness, security, and specialty analysis |
+| 5 | Synthesis | inline | No | Deduplicate and group |
+| 6 | Architect | `architect` agent | No | Architecture review |
+| 7 | SDD + Challenge | `oracle` agent | No | Reconcile the SDD last and validate findings |
+| 8 | Output | inline | — | Format and display findings |

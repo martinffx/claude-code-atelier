@@ -7,7 +7,7 @@ user-invocable: true
 
 # Code Review Skill
 
-Multi-agent code analysis with parallel reviewers and challenge validation.
+Multi-agent code analysis with a simplicity gate, focused reviewers, and challenge validation.
 
 Uses explicit subagent dispatch patterns from [code-subagents](../code-subagents/SKILL.md).
 
@@ -35,20 +35,38 @@ Use these concrete harness subagent types. If an exact match is unavailable, use
 | `subagent_type` | Purpose |
 |-----------------|---------|
 | `sentinel` | Triage only: changed-file analysis, context retrieval, reviewer selection |
-| `oracle` | Parallel reviewer personas, evidence-based critique, failure-mode analysis, challenge validation |
+| `oracle` | Reviewer personas, evidence-based critique, failure-mode analysis, challenge validation |
 | `architect` | Architecture, design-boundary, data-model, and API-contract review |
 
 Reviewer names such as `Security`, `Correctness`, `Maintainability`, and `PerformanceOperator` are prompt personas, not subagent types. Do not use `general`; it is not a harness agent.
+
+`Simplicity` is a mandatory reviewer persona for migrations, refactors, and architectural
+changes. Run it before the other reviewers; do not include it in the parallel reviewer batch.
+
+## Review Priority
+
+Review in this order:
+
+1. User goal and prior behavior
+2. Necessity and deletion
+3. Correctness and security
+4. Architecture
+5. SDD compliance
+
+Treat the SDD as evidence, not as authority for whether code is necessary. A finding that
+would expand behavior or infrastructure requires user approval. Never apply it as an ordinary
+review fix.
 
 ### rq (Request Review) Subagents
 
 | Step | Parallel | Purpose |
 |------|----------|---------|
 | 1. Triage | No | Detect context, select reviewers, identify relevant skills to look for |
-| 2. Reviewers | Yes (per reviewer) | Specialty analysis using reviewer personas |
-| 3. Synthesis | No | Deduplicate findings inline |
-| 4. Architect | No | Architecture review |
-| 5. Challenge | No | Validate findings with sequential-thinking |
+| 2. Simplicity | No | Mandatory necessity and deletion review for migrations, refactors, and architectural changes |
+| 3. Reviewers | Yes (per reviewer) | Correctness, security, and other specialty analysis |
+| 4. Synthesis | No | Deduplicate findings inline |
+| 5. Architect | No | Architecture review |
+| 6. SDD + Challenge | No | Check SDD compliance last, then validate findings |
 
 ### rs (Respond to Review)
 
