@@ -41,7 +41,9 @@ change determine which patterns apply.
 
 Begin with the current design and the minimum behavior-preserving change. Product,
 infrastructure, and architectural expansion require explicit scope. Keep **ponytail** active
-throughout development when it is available or required by the repository.
+throughout development when it is available or required by the repository. Keep
+**writing-clearly-and-concisely** active whenever writing or editing prose for humans. Before
+returning or persisting that prose, apply **humanizer** in embedded mode.
 
 ## Planning Modes
 
