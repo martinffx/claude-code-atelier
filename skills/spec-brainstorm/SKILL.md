@@ -3,8 +3,8 @@ name: spec-brainstorm
 description: >
   Conversational design workshop for substantial work. Interviews the human one question
   at a time, explores 2-3 approaches with trade-offs, and presents the design
-  section by section for approval before writing the spec. Combines requirements
-  discovery with codebase research and architecture design.
+  section by section for approval before writing only design.md, then stops. Combines
+  requirements discovery with codebase research and architecture design.
   Use when the user explicitly requests a spec or when atelier-orchestrator selects a
   Spec-backed Plan. Ambiguous design or discovery requests route through atelier-orchestrator.
 user-invocable: true
@@ -30,6 +30,14 @@ docs/specs/YYYY-MM-DD-<feature>/
 ```
 
 Requirements are inline — no separate requirements.json needed.
+
+### Exclusive output contract
+
+This skill may create or update only the `design.md` shown above. It may inspect the
+repository and discuss drafts in conversation, but it must not modify any other file, create
+`plan.json`, create tracker entries, invoke another workflow skill, or write implementation
+code. This boundary still applies when the human asks to brainstorm, plan, and implement in
+one request. Finish `design.md`, report it, and stop.
 
 ---
 
@@ -265,9 +273,9 @@ If you loop twice on the same batch, stop and ask:
 
 > "We've looped on [batch] twice. Should we reconsider the approach?"
 
-**Terminology discipline:** while drafting batches, challenge terms against
-`CONTEXT.md` and update it inline as terms resolve, using the **oracle-domain-modelling**
-skill. If domain confusion runs deep, suggest pausing for **oracle-grill-me** before continuing.
+**Terminology discipline:** while drafting batches, challenge terms against `CONTEXT.md` and
+record resolved terminology in `design.md`. Do not update `CONTEXT.md` from this skill. If
+domain confusion runs deep, suggest pausing for **oracle-grill-me** before continuing.
 
 ### 4c. Write the spec
 
@@ -360,16 +368,17 @@ note them at handoff.
 
 **Tell the human:**
 
-> "Spec written to `docs/specs/<path>`. Please confirm this assembled document before we move to
-> the Spec-backed Plan."
+> "Brainstorm complete. Design written to `docs/specs/<path>/design.md`. A separate
+> `spec-plan` invocation can create `plan.json` after you approve this document."
 
 If the human requests changes — in conversation or by annotating the file — address every note,
 update the spec, and re-run the self-review. If a change alters the substance of an approved
 section, re-present that section for approval before continuing. Resolve questions that affect
 scope, architecture, contracts, data, security, or task ordering before handoff.
 
-The next step is **spec-plan** in Spec-backed mode. Do not start planning without the
-human's go-ahead. Do not write code.
+Stop after reporting the completed `design.md`. Do not invoke `spec-plan`, offer to continue
+automatically, create `plan.json`, or write code. The human must start the next phase with a
+separate request.
 
 If planning reveals design flaws, loop back to research. See **atelier-orchestrator**
 for iteration patterns.
