@@ -1,9 +1,9 @@
 ---
 name: spec-implement
 description: >
-  Execute an approved Spec-backed Plan from plan.json. Uses task tracking when useful, enforces
-  TDD, and reports between batches. Trigger when the user says "implement", "go", "start", or
-  "do it" after approving a persisted plan. Do NOT use without an approved Spec-backed Plan.
+  Continue an approved Spec-backed workflow when the user says "implement", "go", "start", or
+  "do it". After Codex Plan Mode, persist the next missing design.md or plan.json artifact and
+  stop. When both artifacts exist, execute plan.json with TDD and report between batches.
 user-invocable: true
 ---
 
@@ -14,21 +14,30 @@ when blocked.
 
 **Announce at start:** "I'm using the spec-implement skill to execute this plan."
 
-This skill does not make design decisions or modify the plan. If the plan is wrong, go
-back to spec-plan. If the design is wrong, go back to spec-brainstorm.
+This skill does not make design decisions or change approved content. It may persist approved
+content from the conversation when Plan Mode could not write the required artifact. If the plan
+is wrong, go back to spec-plan. If the design is wrong, go back to spec-brainstorm.
 
 ## Prerequisites
 
-Before starting, verify these exist:
+Resolve required artifacts in order before starting product implementation:
 
-1. Approved `docs/specs/YYYY-MM-DD-<feature>/design.md`
-2. Approved `docs/specs/YYYY-MM-DD-<feature>/plan.json`
-3. Any tracker entries selected during planning are available, along with
-   `docs/agents/issue-tracker.md` when tracking is configured
-4. You are not on main/master without explicit user consent. Create a branch or use a git
-   worktree first.
+1. If `docs/specs/YYYY-MM-DD-<feature>/design.md` is missing, write it from the approved design
+   in the current conversation. Validate the file, report its path, and stop. Do not create
+   `plan.json` or start implementation in the same invocation.
+2. Otherwise, if `docs/specs/YYYY-MM-DD-<feature>/plan.json` is missing, write it from the
+   approved plan in the current conversation. Validate it against the schema in `spec-plan`,
+   report its path, and stop. Do not start implementation in the same invocation.
+3. If the approved content needed for the next missing artifact is not available in the current
+   conversation, stop and tell the human what content is unavailable. Do not ask the human to
+   create the file.
+4. When both artifacts exist, verify that any tracker entries selected during planning are
+   available, along with `docs/agents/issue-tracker.md` when tracking is configured.
+5. Verify that you are not on main/master without explicit user consent. Create a branch or use
+   a git worktree first.
 
-If anything is missing, do not proceed. Tell the human what's needed.
+Each invocation creates at most one missing artifact. Only proceed to product implementation
+when both approved artifacts existed at the start of the invocation.
 
 ---
 
